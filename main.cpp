@@ -21,7 +21,8 @@ string getInput();
 int ownCd(vector<string> args);
 int ownExit(vector<string> args);
 
-vector<string> ownCommands = {"cd", "exit"};
+const char* cmds[] = {"cd", "exit"};
+vector<string> ownCommands(cmds, cmds + 2);
 int (*ownCommandFuncs[]) (vector<string>) = {&ownCd, &ownExit};
 
 int ownCd(vector<string> args)
@@ -51,7 +52,8 @@ int execute(vector<string> args)
     return 1;		//return status of 1
   else
   { //check for built in command and execute them
-    vector<string> ownCommands = {"cd", "exit"};
+    const char* cmds[] = {"cd", "exit"};
+    vector<string> ownCommands(cmds, cmds + 2);
     for(int i = 0; i < ownCommands.size(); i++)
     {
      if( args[0] == ownCommands[i] )
@@ -71,12 +73,18 @@ int execute(vector<string> args)
    }
    else if (pid == 0)  //child process
    {
-     char* command[100]; 
-     copy(args.begin(), args.end(), command);
+    //char* command[100];
+    //copy(args.begin(), args.end(), command);
     // const char* command = forCommand.c_str();
+    
+    //Convert vector string to char array for execvp
+    vector<char *> command(args.size() + 1); // Added +1 for the null terminator
+    for( size_t i = 0; i != args.size(); i++) {
+    	command[i] = &args[i][0];
+    }
 
     // char **command = &args[0];	//make args to char** for execvp
-     if(execvp(command[0], command) == -1 )
+     if(execvp(command[0], command.data()) == -1 )
        perror("execvp failed");
 
      exit(1);	//exit failure
@@ -104,7 +112,7 @@ vector<string> parse(string inputLine)
 {
   vector<string> vectForTokens;
   char_separator<char> sep("\t\n");
-  tokenizer<char_separator<char>> tokens(inputLine, sep);
+  tokenizer<char_separator<char> > tokens(inputLine, sep);
 
   BOOST_FOREACH(string t, tokens)
   {
