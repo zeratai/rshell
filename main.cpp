@@ -146,6 +146,19 @@ vector<string> parse(string inputLine)
   return vectForTokens;
 }
 
+//Check if there are any Connectors
+bool isConnector(vector<string> args) {
+   char const* connector_list[] = {"&&", "||", ";"}; //Create our connector list
+   vector<string> ownConnectors(connector_list, connector_list + 3); //Convert our connector list into a vector<string> to compare our args input
+   for(int i = 0; i < ownConnectors.size(); i++) {
+      for(int j = 0; j < args.size(); j++) {
+         if( args[j] == ownConnectors[i])
+            return true;
+      }
+   }
+   return false;
+}
+
 void shell()
 {
   string inputLine;
@@ -168,6 +181,10 @@ void shell()
     for(vector<string>::const_iterator it = args.begin(); it != args.end(); it++)
       cout << *it << " ";	//to check args
 */
+    //Test isConnector function
+    if(isConnector(args)) {
+       cout << "There is a connector";
+    }
     status = execute(args); 		//executes commands and sets status to continue running if 1
    }while(status);
 
