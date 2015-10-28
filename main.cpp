@@ -9,6 +9,8 @@
 #include <vector>
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
+#include <algorithm>   //copy
+#include <iterator>    //back_inserter()
 
 using namespace std;
 using namespace boost;
@@ -65,7 +67,7 @@ int execute(vector<string> args)
    pid_t pid;
    int status;
     
-   pid = fork();    if (pid < 0)    //error forking
+   pid = fork();       //error forking
    if (pid < 0)    //error forking
    {
      perror("fork failed");
@@ -78,16 +80,37 @@ int execute(vector<string> args)
     // const char* command = forCommand.c_str();
     
     //Convert vector string to char array for execvp
-    vector<char *> command(args.size() + 1); // Added +1 for the null terminator
-    for( size_t i = 0; i != args.size(); i++) {
+/*    vector<char *> command(args.size() + 1 ); // Added +1 for the null terminator
+    for( size_t i = 0; i != args.size(); i++)
+    {
     	command[i] = &args[i][0];
     }
 
-    // char **command = &args[0];	//make args to char** for execvp
-     if(execvp(command[0], command.data()) == -1 )
-       perror("execvp failed");
+    cout << "in execute "; //to check
+    for(vector<char*>::const_iterator it = command.begin(); it != command.end(); it++)
+      cout << *it << " ";	//to check execute
+*/  
+    vector<char *> commandVector;
+    for(size_t i = 0; i < args.size(); ++i)
+      commandVector.push_back(const_cast<char*>(args[i].c_str() ));
 
-     exit(1);	//exit failure
+   // for(vector<string>::const_iterator it = args.begin(); it != args.end(); it++)
+   // {
+    //  commandVector.push_back(*it);
+   // }
+   // copy(args.begin(), args.end(), back_inserter(commandVector[0]) );
+    commandVector.push_back(NULL);	//push NULL to end of vect execvp expects null
+
+    char** command = &commandVector[0]; 
+
+    // char **command = &args[0];	//make args to char** for execvp
+     if(execvp(command[0], command) == -1 )
+     {
+       perror("execvp errrrr ");
+     }
+       exit(1);	//exit failure
+     
+ //  execvp(command[0], command.data() );
    }
    else if (pid > 0)  //parent process
    {
@@ -111,13 +134,13 @@ string getInput()
 vector<string> parse(string inputLine)
 {
   vector<string> vectForTokens;
-  char_separator<char> sep("\t\n");
+  char_separator<char> sep(" \r\a\t\n");
   tokenizer<char_separator<char> > tokens(inputLine, sep);
 
   BOOST_FOREACH(string t, tokens)
   {
    vectForTokens.push_back(t);
-   cout<<"inside parse "  << t << endl;  //to check 
+ //  cout<<"inside parse "  << t << endl;  //to check 
   }
   
   return vectForTokens;
@@ -140,11 +163,11 @@ void shell()
     inputLine = getInput();		//reads user input then saves to inputLine
 
     args = parse(inputLine);		//parses inputLine for commands to be executed
-
+/*
     cout << "args "; //to check
     for(vector<string>::const_iterator it = args.begin(); it != args.end(); it++)
       cout << *it << " ";	//to check args
-
+*/
     status = execute(args); 		//executes commands and sets status to continue running if 1
    }while(status);
 
