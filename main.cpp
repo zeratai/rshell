@@ -146,14 +146,31 @@ vector<string> parse(string inputLine)
   return vectForTokens;
 }
 
+bool andConnector = false;
+bool orConnector = false;
+
+void whichConnector(string c) {
+   if( c == "&&") {
+      andConnector = true;
+      //cout << "This is an and connector\n";
+   }
+   else if( c == "||") {
+      orConnector = true;
+      //cout << "This is an or connector\n";
+   }
+}
+
 //Check if there are any Connectors
 bool isConnector(vector<string> args) {
    char const* connector_list[] = {"&&", "||", ";"}; //Create our connector list
    vector<string> ownConnectors(connector_list, connector_list + 3); //Convert our connector list into a vector<string> to compare our args input
    for(int i = 0; i < ownConnectors.size(); i++) {
       for(int j = 0; j < args.size(); j++) {
-         if( args[j] == ownConnectors[i])
+         if( args[j] == ownConnectors[i]) {
+            whichConnector(ownConnectors[i]); //determind which type of connector for further parsing
+            //cout << ownConnectors[i] << "\n";
             return true;
+         }
       }
    }
    return false;
@@ -181,11 +198,18 @@ void shell()
     for(vector<string>::const_iterator it = args.begin(); it != args.end(); it++)
       cout << *it << " ";	//to check args
 */
-    //Test isConnector function
+    //Test isConnector function, if there is a connector - use multiparser recursive function to execute
     if(isConnector(args)) {
-       cout << "There is a connector";
+       //cout << "There is a connector\n";
+       if(andConnector) {
+          //cout << "There is an and connector\n";
+       }
+       else if(orConnector) {
+          //cout << "There is an or connector\n";
+       }
     }
-    status = execute(args); 		//executes commands and sets status to continue running if 1
+    else
+       status = execute(args); 		//executes commands and sets status to continue running if 1
    }while(status);
 
 }
