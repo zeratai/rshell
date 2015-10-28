@@ -11,6 +11,7 @@
 #include <boost/foreach.hpp>
 #include <algorithm>   //copy
 #include <iterator>    //back_inserter()
+#include <list>
 
 using namespace std;
 using namespace boost;
@@ -176,6 +177,76 @@ bool isConnector(vector<string> args) {
    return false;
 }
 
+int parseExec(string inputLine )   //from checked ; --parses then calls execute
+{
+  int status;
+ // bool semicolon = false;
+  list<string> parsed;
+  vector<string> commandVect;
+  char_separator<char> sep(" \r\a\t\n", ";&|");
+  tokenizer<char_separator<char> > tokens(inputLine, sep);
+
+  BOOST_FOREACH(string t, tokens)
+  {
+    parsed.push_back(t);
+  }
+  
+  list<string> commands;
+  while (!(parsed.empty()) ) //push cmds in commands, connectors still in parsed list
+  {
+    if (parsed.front() == ";")
+      parsed.pop_front();
+    else
+    {
+      commandVect.push_back(parsed.front());
+      commands.push_back(parsed.front()); 
+      parsed.pop_front();
+  //    cout << "in parseExec "; //to check
+  //    for(vector<string>::const_iterator it = commandVect.begin(); it != commandVect.end(); it++)
+  //      cout << *it << " ";	//to check args
+    }
+  
+  }
+  
+  do 
+  {
+    cout << "in parseExec "; //to check
+      for(vector<string>::const_iterator it = commandVect.begin(); it != commandVect.end(); it++)
+        cout << *it << " ";	//to check args
+    status = execute(commandVect);
+    commandVect.erase(commandVect.begin());  
+  }while(status );
+ 
+ /* 
+  while (!(commands.empty()) )
+  {
+   if (parsed.front() == ";")
+   {
+     semicolon = true;
+     parsed.pop_front();
+   }
+   else
+   {
+     status = execute(commandVect);
+     commands.pop_front();
+     break;
+   }
+
+   if (semicolon == true)
+   {
+     status = execute(commandVect);
+     commands.pop_front();
+    
+     cout << "in parseExec1 "; //to check
+     for(vector<string>::const_iterator it = commandVect.begin(); it != commandVect.end(); it++)
+      cout << *it << " ";	//to check args
+   }
+ 
+  }*/
+  return status;
+
+}
+
 void shell()
 {
   string inputLine;
@@ -191,6 +262,12 @@ void shell()
       cout << "[" << getlogin() << "@ " << hostName << "]" << "$ ";
    
     inputLine = getInput();		//reads user input then saves to inputLine
+
+    if ( inputLine.find(";") != string::npos)  //looks for ;
+    { 
+      status =  parseExec(inputLine);   //parseExec parses then calls execute()
+     
+    } 
 
     args = parse(inputLine);		//parses inputLine for commands to be executed
 /*
