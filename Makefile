@@ -8,6 +8,7 @@ MAKE_DIR = mkdir -p $(DIR)
 
 default: $(TARGET)
 all: default
+rshell: default
 
 OBJECTS = main.cpp
 
