@@ -151,16 +151,16 @@ int parseExec(string inputLine )   //from checked ; --parses then calls execute
 {
   int status;
  // bool semicolon = false;
-  list<string> parsed;
+//  list<string> parsed;
   vector<string> commandVect;
-  char_separator<char> sep(" \r\a\t\n", ";&|");
+  char_separator<char> sep(" \r\a\t\n;");
   tokenizer<char_separator<char> > tokens(inputLine, sep);
 
   BOOST_FOREACH(string t, tokens)
   {
-    parsed.push_back(t);
+    commandVect.push_back(t);
   }
-  
+  /*
   list<string> commands;
   while (!(parsed.empty()) ) //push cmds in commands, connectors still in parsed list
   {
@@ -176,17 +176,36 @@ int parseExec(string inputLine )   //from checked ; --parses then calls execute
   //      cout << *it << " ";	//to check args
     }
   
+  }*/
+/*  vector<string> firstOneCommand;
+  vector<string> secondOneCommand;
+  vector<string> thirdOneCommand;
+  firstOneCommand.push_back(commandVect[0]);
+  secondOneCommand.push_back(commandVect[1]);
+  thirdOneCommand.push_back(commandVect[2]);
+
+  status = execute(firstOneCommand);
+  status = execute(secondOneCommand);
+  status = execute(thirdOneCommand);  */
+
+  for(vector<string>::const_iterator it = commandVect.begin(); it != commandVect.end(); it++)
+  {
+    vector<string> oneCommand;
+    oneCommand.push_back(*it);
+
+    status = execute(oneCommand);
   }
-  
+/*
   do 
   {
+   
     cout << "in parseExec "; //to check
       for(vector<string>::const_iterator it = commandVect.begin(); it != commandVect.end(); it++)
         cout << *it << " ";	//to check args
     status = execute(commandVect);
     commandVect.erase(commandVect.begin());  
-  }while(status );
- 
+  }while(!(commandVect.empty()) );
+*/
  /* 
   while (!(commands.empty()) )
   {
@@ -221,32 +240,49 @@ void shell()
   string inputLine;
   vector<string> args;  //before char** args
   int status;
-
-    do
-    {
-    char hostName[128];			//buffer to hold name from gethostname
-    if( (gethostname(hostName, sizeof hostName) == -1) )	//gethostname returns 0=success or -1=error
-      perror("gethostname");		//print system error with program name
-    else 
-      cout << "[" << getlogin() << "@ " << hostName << "]" << "$ ";
+/* 
+  char hostName[128];			//buffer to hold name from gethostname
+  if( (gethostname(hostName, sizeof hostName) == -1) )	//gethostname returns 0=success or -1=error
+    perror("gethostname");		//print system error with program name
+  else 
+    cout << "[" << getlogin() << "@ " << hostName << "]" << "$ ";
    
-    inputLine = getInput();		//reads user input then saves to inputLine
+  inputLine = getInput();
+  if ( inputLine.find(";") != string::npos)  //looks for ;
+  { 
+    status =  parseExec(inputLine);   //parseExec parses then calls execute()
+     // continue;
+  } 
+*/
+  do
+  {
+jump:
+  char hostName[128];			//buffer to hold name from gethostname
+  if( (gethostname(hostName, sizeof hostName) == -1) )	//gethostname returns 0=success or -1=error
+    perror("gethostname");		//print system error with program name
+  else 
+    cout << "[" << getlogin() << "@ " << hostName << "]" << "$ ";
+   
+  inputLine = getInput();		//reads user input then saves to inputLine
 
-    if ( inputLine.find(";") != string::npos)  //looks for ;
-    { 
-      status =  parseExec(inputLine);   //parseExec parses then calls execute()
-     
-    } 
-    continue;			//goes back top of loop
 
-    args = parse(inputLine);		//parses inputLine for commands to be executed
+  if ( inputLine.find(";") != string::npos)  //looks for ;
+  { 
+    status =  parseExec(inputLine);   //parseExec parses then calls execute()
+    goto jump;
+     // continue;
+  } 
+//   continue;			//goes back top of loop
+
+
+  args = parse(inputLine);		//parses inputLine for commands to be executed
 /*
     cout << "args "; //to check
     for(vector<string>::const_iterator it = args.begin(); it != args.end(); it++)
       cout << *it << " ";	//to check args
 */
-    status = execute(args); 		//executes commands and sets status to continue running if 1
-   }while(status);
+  status = execute(args); 		//executes commands and sets status to continue running if 1
+ }while(status);
 
 }
 
