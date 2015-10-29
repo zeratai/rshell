@@ -1,6 +1,7 @@
 DIR = bin
 TARGET = $(addprefix $(DIR)/,rshell)
 CC = g++
+CCFLAGS = -Wall -Werror -ansi -pedantic
 MAKE_DIR = mkdir -p $(DIR)
 
 .PHONY: default all clean
@@ -14,7 +15,7 @@ OBJECTS = main.cpp
 
 $(TARGET): $(OBJECTS)
 	$(MAKE_DIR)
-	$(CC) $(OBJECTS) -o $(TARGET)
+	$(CC) $(CCFLAGS) $(OBJECTS) -o $(TARGET)
 
 clean:
 	-rm -f $(TARGET)
