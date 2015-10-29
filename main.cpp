@@ -188,13 +188,77 @@ int parseExec(string inputLine )   //from checked ; --parses then calls execute
   status = execute(secondOneCommand);
   status = execute(thirdOneCommand);  */
 
+
+  vector<string>::const_iterator it = commandVect.begin();
+  do
+  { 
+    if (*it == "cd")
+    { 
+      vector<string> oneCommand;
+      oneCommand.push_back(*it);  //pushes cd command
+      it++;
+      oneCommand.push_back(*it);   //pushes cd argument .. or a directory
+      cout << oneCommand[0] << endl;
+      cout << oneCommand[1] << endl;
+      status = execute(oneCommand); 
+    }
+    else
+    {
+      goto next; 
+  /*    for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
+      {
+        vector<string> oneCommand;
+        oneCommand.push_back(*i);
+
+        status = execute(oneCommand);
+      }  */
+    }
+  }while(it++ != commandVect.end() - 1 );
+
+next:
+    for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
+    {
+      vector<string> oneCommand;
+      oneCommand.push_back(*i);
+
+      status = execute(oneCommand);
+     }
+
+
+/*
+  for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i + 2)  //looks for cd
+  {
+    if (*i == "cd")
+    { 
+      vector<string>::const_iterator it = commandVect.begin();
+      vector<string> oneCommand;
+      oneCommand.push_back(*it);  //pushes cd command
+      it++;
+      oneCommand.push_back(*it);   //pushes cd argument .. or a directory
+      cout << oneCommand[0] << endl;
+      cout << oneCommand[1] << endl;
+    //  status = execute(oneCommand); 
+    }
+    else
+    { 
+      for(vector<string>::const_iterator it = commandVect.begin(); it != commandVect.end(); it++)
+      {
+        vector<string> oneCommand;
+        oneCommand.push_back(*it);
+
+        status = execute(oneCommand);
+      }
+    }
+ 
+  }*/
+/*
   for(vector<string>::const_iterator it = commandVect.begin(); it != commandVect.end(); it++)
   {
     vector<string> oneCommand;
     oneCommand.push_back(*it);
 
     status = execute(oneCommand);
-  }
+  }*/
 /*
   do 
   {
