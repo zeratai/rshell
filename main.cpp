@@ -386,10 +386,10 @@ jump:
     if(isConnector(args)) {
        //cout << "There is a connector\n";
        if(andConnector) {
-          //cout << "There is an and connector\n";
+          cout << "There is an and connector\n";
        }
        else if(orConnector) {
-          //cout << "There is an or connector\n";
+          cout << "There is an or connector\n";
        }
     }
     else
