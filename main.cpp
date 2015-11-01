@@ -209,7 +209,7 @@ int parseExec(string inputLine )   //from checked ; --parses then calls execute
         return(*ownCommandFuncs[i]) (oneCommand); 
       }
     }
-
+/*
     if (*it != "cd")
     {
       for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
@@ -220,12 +220,11 @@ int parseExec(string inputLine )   //from checked ; --parses then calls execute
         status = execute(oneCommand);
       }
 
+    } */
 
-    }
-
-//    else
-  //  {
-    //  goto next; 
+    else
+    {
+      goto next; 
  /*     for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
         {
         vector<string> oneCommand;
@@ -233,9 +232,9 @@ int parseExec(string inputLine )   //from checked ; --parses then calls execute
 
         status = execute(oneCommand);
         }*/  
-  //  }
+    }
   }while(it++ != commandVect.end() );
-/*
+
 next:
     for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
     {
@@ -244,7 +243,7 @@ next:
 
       status = execute(oneCommand);
      }
-*/
+
 
 /*
   for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i + 2)  //looks for cd
