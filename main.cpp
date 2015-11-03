@@ -256,7 +256,7 @@ int parseMultipleExec(string inputLine) {
   					j = j + 2;
   					while(!hasConnector(commandVect[j]) && commandVect[i] != ";" && i < commandVect.size()) {
   						parsedVector.push_back(commandVect[j]);
-  						cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
+  						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
   						j++;
   					} 
   					// push next command
@@ -293,16 +293,26 @@ int parseMultipleExec(string inputLine) {
   			else if(status != -1) 
   				{
   					connectorOrCount++;
-  					//cout << "status is -1, do not run second command\n";
+  					cout << "status is not -1, do not run second command\n";
   					i = i + 2;
   					//cout << j << "\n";
-  					while(!hasConnector(commandVect[i]) && i < commandVect.size()) {
+  					while(!hasConnector(commandVect[i]) && commandVect[i] != ";" && i < commandVect.size()) {
   						parsedVector.push_back(commandVect[i]);
   						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
   						i++;
   						whichConnector(commandVect[i]);
   					}
+  					int j = i;
+  					j = j + 2;
+  					while(!hasConnector(commandVect[j]) && commandVect[i] != ";" && i < commandVect.size()) {
+  						parsedVector.push_back(commandVect[j]);
+  						cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
+  						j++;
+  					}
   					parsedVector.clear();
+  					if(i+1 < commandVect.size()) {
+  						whichConnector(commandVect[i+1]);
+  					}
   					orConnector = false;
   					secondOrConnector = false;
   				}
