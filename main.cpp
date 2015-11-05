@@ -253,7 +253,10 @@ int parseMultipleExec(string inputLine) {
   					parsedVector.clear();
   					whichConnector(commandVect[i+1]);
   					int j = i;
-  					j = j + 2;
+  					if(commandVect[i+1] == ";") {
+  						j = j + 1;
+  					}
+  					else j = j + 2;
   					while(!hasConnector(commandVect[j]) && commandVect[i] != ";" && i < commandVect.size()) {
   						parsedVector.push_back(commandVect[j]);
   						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
@@ -298,7 +301,7 @@ int parseMultipleExec(string inputLine) {
   					//cout << j << "\n";
   					while(!hasConnector(commandVect[i]) && commandVect[i] != ";" && i < commandVect.size()) {
   						parsedVector.push_back(commandVect[i]);
-  						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
+  						cout << "Position i: " << i << "\n" << "command Vector i: " << commandVect[i] << "\n";
   						i++;
   						whichConnector(commandVect[i]);
   					}
