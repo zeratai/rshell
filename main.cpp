@@ -221,30 +221,51 @@ int parseExec(string inputLine )   //from checked ; --parses then calls execute
 
   vector<string>::const_iterator it = commandVect.begin();
   do
-  { 
+  {
     if (*it == "cd")
     { 
       vector<string> oneCommand;
-      oneCommand.push_back(*it);  //pushes cd command
-      it++;
-      oneCommand.push_back(*it);   //pushes cd argument .. or a directory
-      cout << oneCommand[0] << endl;
-      cout << oneCommand[1] << endl;
-      status = execute(oneCommand); 
+      oneCommand.push_back(*it);
+      vector<string>::const_iterator cpy = it;
+      cpy++;
+      oneCommand.push_back(*cpy);
+     // ownCd(oneCommand);        
+
+      const char* cmds[] = {"cd", "exit"};
+      vector<string> ownCommands(cmds, cmds + 2);
+      for(int i = 0; i < ownCommands.size(); i++)
+      {
+      // if( commandVect[0] == ownCommands[i] )
+        return(*ownCommandFuncs[i]) (oneCommand); 
+      }
     }
-    else
+
+    if (*it != "cd")
     {
-      goto next; 
-  /*    for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
+      for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
       {
         vector<string> oneCommand;
         oneCommand.push_back(*i);
 
         status = execute(oneCommand);
-      }  */
-    }
-  }while(it++ != commandVect.end() - 1 );
+      }
 
+
+    }
+
+//    else
+  //  {
+    //  goto next; 
+ /*     for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
+        {
+        vector<string> oneCommand;
+        oneCommand.push_back(*i);
+
+        status = execute(oneCommand);
+        }*/  
+  //  }
+  }while(it++ != commandVect.end() );
+/*
 next:
     for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i++)
     {
@@ -253,7 +274,7 @@ next:
 
       status = execute(oneCommand);
      }
-
+*/
 
 /*
   for(vector<string>::const_iterator i = commandVect.begin(); i != commandVect.end(); i + 2)  //looks for cd
