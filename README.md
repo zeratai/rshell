@@ -4,10 +4,10 @@ A command shell written in C++.
 #Limitations
 All single commands without a connector(;, &&, ||, #) works with all tested cases.
 
-Exit command works, but when previous commands with a combination of && and ||, must type exit
-multiple times.
+Exit command works. When using the script commands in test cases, need to type exit multiple times,
+but outside of script, exit is flawless as tested with script command.
 
-Commands with comments work, but with the nuances of bugs with exit.
+Commands with comments work as tested.
 
 #Bugs
 After a combination of && and || in a line, if exiting, multiple exit lines must be typed from
