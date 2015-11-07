@@ -23,6 +23,7 @@ Commands with comments work as tested.
 
 #Bugs
 No bugs currently found as tested. Readme updated when bugs are found.
+
 November 6th, 2015 Bugs
 
 echo "testing with quotes" #this will output "testing with quotes" with the quotation marks - will need to remove later
