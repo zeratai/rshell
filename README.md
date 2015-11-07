@@ -1,12 +1,14 @@
 #rshell
-A command shell written in C++
-
-Added connector.cpp which contains the Abstract Base Class for Connector.
-   - For now the orConnector class inherits the Connector class which will takes the argument of the array of cmd. It will then use strtok to check if there is the || connector and return true if there is one.
-
-   - In the connector.cpp, we wrote a test function with some simple commands to test the strtok and parsing features.
+A command shell written in C++.
 
 #Limitations
+All single commands without a connector(;, &&, ||, #) works with all tested cases.
 
+Exit command works, but when previous commands with a combination of && and ||, must type exit
+multiple times.
+
+Commands with comments work, but with the nuances of bugs with exit.
 
 #Bugs
+After a combination of && and || in a line, if exiting, multiple exit lines must be typed from
+two to three exit(e.g exit,enter, then exit, enter)

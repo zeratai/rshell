@@ -1,0 +1,24 @@
+Script started on Fri 06 Nov 2015 08:29:23 PM PST
+?1034h[ady002@hammer rshell]$ ./bin/rshell
+[ady002@hammer.cs.ucr.edu]$ ls
+bin  commented_commands.sh  commented_commands.txt  exit_command.txt  main  Makefile  README.md	 single_commands  single_commands.sh  single_commands.txt  src	tests
+[ady002@hammer.cs.ucr.edu]$ ls; exit
+bin  commented_commands.sh  commented_commands.txt  exit_command.txt  main  Makefile  README.md	 single_commands  single_commands.sh  single_commands.txt  src	tests
+This is our own custom exit
+[ady002@hammer.cs.ucr.edu]$ ./bin/rshell
+[ady002@hammer.cs.ucr.edu]$ pwd; ls; echo "YO"; echo "then exit"; exit
+/home/csmajs/ady002/CS100/HW/rshell
+bin  commented_commands.sh  commented_commands.txt  exit_command.txt  main  Makefile  README.md	 single_commands  single_commands.sh  single_commands.txt  src	tests
+"YO"
+"then exit"
+This is our own custom exit
+[ady002@hammer.cs.ucr.edu]$ ./bin/rshell
+[ady002@hammer.cs.ucr.edu]$ exit
+This is our own custom exit
+[ady002@hammer.cs.ucr.edu]$ exit
+This is our own custom exit
+[ady002@hammer.cs.ucr.edu]$ exit
+This is our own custom exit
+[ady002@hammer rshell]$ exit
+
+Script done on Fri 06 Nov 2015 08:31:36 PM PST

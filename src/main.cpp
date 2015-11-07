@@ -65,7 +65,7 @@ int execute(vector<string> args)
   { //check for built in command and execute them
     const char* cmds[] = {"cd", "exit"};
     vector<string> ownCommands(cmds, cmds + 2);
-    for(int i = 0; i < ownCommands.size(); i++)
+    for(size_t i = 0; i < ownCommands.size(); i++)
     {
      if( args[0] == ownCommands[i] )
        return(*ownCommandFuncs[i]) (args); 
@@ -274,7 +274,7 @@ int parseMultipleExec(string inputLine) {
   					parsedVector.clear();
   					//cout << commandVect[i] << "\n";
   					whichConnector(commandVect[i]);
-  					int j = i;
+  					size_t j = i;
   					//cout << "Position j at semicolon check: " << j << "\n";
   					if(commandVect[i] == ";") {
   					    //cout << "has semicolon \n";
@@ -344,7 +344,7 @@ int parseMultipleExec(string inputLine) {
   					parsedVector.clear();
   					//cout << commandVect[i] << "\n";
   					whichConnector(commandVect[i]);
-  					int j = i;
+  					size_t j = i;
   					//cout << "Position j at semicolon check: " << j << "\n";
   					if(commandVect[i] == ";") {
   					    //cout << "has semicolon \n";
