@@ -30,6 +30,7 @@ echo "testing with quotes" #this will output "testing with quotes" with the quot
 
 ls -l && pwd && echo yes! || echo dont output && echo this will fail ; ls -a && pwd #mixing an || following
 an && connector will cause the command to run the && command and will not run the commands after the ;
+#The above bug for || connector logic has been fixed, but running the ls -a && pwd will cause errors for pwd
 
 ls && pwd && echo yes && echo done || echo no ; ls -l #these commands work but our rshell will try to execute a final command
 causing a perror, this needs further investigation
