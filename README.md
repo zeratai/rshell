@@ -10,5 +10,5 @@ but outside of script, exit is flawless as tested with script command.
 Commands with comments work as tested.
 
 #Bugs
-After a combination of && and || in a line, if exiting, multiple exit lines must be typed from
-two to three exit(e.g exit,enter, then exit, enter)
+
+
