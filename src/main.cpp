@@ -336,7 +336,8 @@ int parseMultipleExec(string inputLine) {
   					i = i + 2;
   					//cout << i << "\n";
   					//cout << j << "\n";
-  					while(!hasConnector(commandVect[i]) && commandVect[i] != ";" && i < commandVect.size()) {
+  					//Push all the failed commands following after the orConnector fails
+  					while(commandVect[i] != ";" && i < commandVect.size()) {
   						parsedVector.push_back(commandVect[i]);
   						//cout << "Position i: " << i << "\n" << "command Vector i: " << commandVect[i] << "\n";
   						i++;
@@ -371,6 +372,8 @@ int parseMultipleExec(string inputLine) {
   			//cout << "is SemiConnector";
   			status = execute(parsedVector);
   			parsedVector.clear();
+  			//cout << commandVect[i] << "\n";
+  			whichConnector(commandVect[i]);
   			semiConnector = false; // default back to false for looping
   		}
   		else {
