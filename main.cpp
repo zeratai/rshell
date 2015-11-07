@@ -46,6 +46,7 @@ int ownCd(vector<string> args)
 
 int ownExit(vector<string> args)
 {
+  cout << "This is our own custom exit \n";
   return 0;
 }
 
@@ -79,6 +80,7 @@ int execute(vector<string> args)
    if (pid < 0)    //error forking
    {
      perror("fork failed");
+     status = -1;
      exit(1);	//exit failure
    }
    else if (pid == 0)  //child process
@@ -93,10 +95,10 @@ int execute(vector<string> args)
 
      if(execvp(command[0], command) == -1 )
      {
+       status = -1;
        perror("execvp errrrr ");
-     }
-       exit(0);	//exit failure
-	   return -1;     
+     } 
+       exit(0);	//exit failure    
    }
    else if (pid > 0)  //parent process
    {
@@ -105,10 +107,10 @@ int execute(vector<string> args)
        waitpid(pid, &status, WUNTRACED);
        if(WEXITSTATUS(status) == 0)
        {
-       	return 1;
+       	return status;
        }
        else
-       	return -1; // Program failed
+       	return status; // Program failed
      }while(!WIFEXITED(status) && !WIFSIGNALED(status));   
    } 
 
@@ -133,7 +135,7 @@ void whichConnector(string c) {
    }
    else if( c == "|") {
       	orConnector = true;
-      	cout << "This is an or connector\n";
+      	//cout << "This is an or connector\n";
    }
    else if( c == ";") {
    	   semiConnector = true;
@@ -145,8 +147,8 @@ void whichConnector(string c) {
 bool isConnector(vector<string> args) {
    char const* connector_list[] = {"&", "|", ";"}; //Create our connector list
    vector<string> ownConnectors(connector_list, connector_list + 3); //Convert our connector list into a vector<string> to compare our args input
-   for(int i = 0; i < ownConnectors.size(); i++) {
-      for(int j = 0; j < args.size(); j++) {
+   for(size_t i = 0; i < ownConnectors.size(); i++) {
+      for(size_t j = 0; j < args.size(); j++) {
          if( args[j] == ownConnectors[i]) {
             whichConnector(ownConnectors[i]); //determind which type of connector for further parsing
             //cout << ownConnectors[i] << "\n";
@@ -251,13 +253,17 @@ int parseMultipleExec(string inputLine) {
   						i++;
   					}
   					parsedVector.clear();
-  					whichConnector(commandVect[i+1]);
+  					//cout << commandVect[i] << "\n";
+  					whichConnector(commandVect[i]);
   					int j = i;
-  					if(commandVect[i+1] == ";") {
+  					//cout << "Position j at semicolon check: " << j << "\n";
+  					if(commandVect[i] == ";") {
+  					    //cout << "has semicolon \n";
   						j = j + 1;
   					}
   					else j = j + 2;
-  					while(!hasConnector(commandVect[j]) && commandVect[i] != ";" && i < commandVect.size()) {
+  					//cout << "Position j after semicolon check: " << j << "\n";
+  					while(!hasConnector(commandVect[j]) && commandVect[j] != ";" && j < commandVect.size()) {
   						parsedVector.push_back(commandVect[j]);
   						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
   						j++;
@@ -281,7 +287,18 @@ int parseMultipleExec(string inputLine) {
   			}
   			//clear vector to be rewritten parsedVector
   			parsedVector.clear();
-  			if(hasConnector(commandVect[i]) && status == -1) // if it has another connector and status is -1, run it 
+  			if(status == -1) {
+  				connectorOrCount++;
+  				//cout << "or connector count: " << connectorOrCount++ << "\n" << "Status: " << status << "\n";
+  				if(hasConnector(commandVect[i]) && secondOrConnector && status == -1) {
+  						//cout << "Run orConnector cmd\n";
+  						//cout << "prasedVector: " << parsedVector[i] << "\n";
+  						status = execute(parsedVector);
+  						orConnector = false; // reset andConnector to check if cmd ends or if there are more commands
+  						secondOrConnector = false;
+  					}
+  			}
+  			else if(hasConnector(commandVect[i]) && status == -1) // if it has another connector and status is -1, run it 
   				{
   					connectorOrCount++;
   					//cout << "or connector count: " << connectorOrCount++ << "\n" << "Status: " << status << "\n";
@@ -296,26 +313,33 @@ int parseMultipleExec(string inputLine) {
   			else if(status != -1) 
   				{
   					connectorOrCount++;
-  					cout << "status is not -1, do not run second command\n";
+  					//cout << "status is -1, do not run second command\n";
   					i = i + 2;
+  					//cout << i << "\n";
   					//cout << j << "\n";
   					while(!hasConnector(commandVect[i]) && commandVect[i] != ";" && i < commandVect.size()) {
   						parsedVector.push_back(commandVect[i]);
-  						cout << "Position i: " << i << "\n" << "command Vector i: " << commandVect[i] << "\n";
+  						//cout << "Position i: " << i << "\n" << "command Vector i: " << commandVect[i] << "\n";
   						i++;
-  						whichConnector(commandVect[i]);
-  					}
-  					int j = i;
-  					j = j + 2;
-  					while(!hasConnector(commandVect[j]) && commandVect[i] != ";" && i < commandVect.size()) {
-  						parsedVector.push_back(commandVect[j]);
-  						cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
-  						j++;
   					}
   					parsedVector.clear();
-  					if(i+1 < commandVect.size()) {
-  						whichConnector(commandVect[i+1]);
+  					//cout << commandVect[i] << "\n";
+  					whichConnector(commandVect[i]);
+  					int j = i;
+  					//cout << "Position j at semicolon check: " << j << "\n";
+  					if(commandVect[i] == ";") {
+  					    //cout << "has semicolon \n";
+  						j = j + 1;
   					}
+  					else j = j + 2;
+  					//cout << "Position j after semicolon check: " << j << "\n";
+  					while(!hasConnector(commandVect[j]) && commandVect[j] != ";" && j < commandVect.size()) {
+  						parsedVector.push_back(commandVect[j]);
+  						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
+  						j++;
+  					} 
+  					// push next command
+  					// parsedVector.push_back(commandVect[i]);
   					orConnector = false;
   					secondOrConnector = false;
   				}
