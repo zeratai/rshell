@@ -1,0 +1,91 @@
+Script started on Fri Nov  6 21:33:50 2015
+bash-3.2$ ./../bin/rshell
+[justinmoy@Justins-MacBook-Pro-2.local]$ ls -l; pwd; echo hello world;
+total 40
+-rw-r--r--  1 justinmoy  staff	2185 Nov  6 21:09 commented_commands
+-rw-r--r--  1 justinmoy  staff	1178 Nov  6 21:09 exit_commands
+-rw-r--r--  1 justinmoy  staff	  43 Nov  6 21:33 multi_command.script
+-rwxrwx--x  1 justinmoy  staff	 851 Nov  6 19:24 multi_command.sh
+-rw-r--r--  1 justinmoy  staff	3517 Nov  6 21:09 single_commands
+/Users/justinmoy/Documents/CS100/Assignment1/rshell/tests
+hello world
+[justinmoy@Justins-MacBook-Pro-2.local]$ ls -l ; pwd ;	 echo spaces test
+total 40
+-rw-r--r--  1 justinmoy  staff	2185 Nov  6 21:09 commented_commands
+-rw-r--r--  1 justinmoy  staff	1178 Nov  6 21:09 exit_commands
+-rw-r--r--  1 justinmoy  staff	 638 Nov  6 21:34 multi_command.script
+-rwxrwx--x  1 justinmoy  staff	 851 Nov  6 19:24 multi_command.sh
+-rw-r--r--  1 justinmoy  staff	3517 Nov  6 21:09 single_commands
+/Users/justinmoy/Documents/CS100/Assignment1/rshell/tests
+spaces test
+[justinmoy@Justins-MacBook-Pro-2.local]$ echo testing and connector && echo works!
+testing and connector
+works!
+[justinmoy@Justins-MacBook-Pro-2.local]$ echo testing and with semi && echo yay!; pwd && ls;
+testing and with semi
+yay!
+/Users/justinmoy/Documents/CS100/Assignment1/rshell/tests
+commented_commands	multi_command.script	single_commands
+exit_commands		multi_command.sh
+[justinmoy@Justins-MacBook-Pro-2.local]$ echo testing failed or || echo dont run;
+testing failed or
+[justinmoy@Justins-MacBook-Pro-2.local]$ this wont run || echo the or works! && pwd; ls -a
+execvp errrrr : No such file or directory
+the or works!
+/Users/justinmoy/Documents/CS100/Assignment1/rshell/tests
+.			exit_commands		single_commands
+..			multi_command.script
+commented_commands	multi_command.sh
+[justinmoy@Justins-MacBook-Pro-2.local]$ this wont run || echo this works! && mmkdir testdir; ls -l && rmdir testdir
+execvp errrrr : No such file or directory
+this works!
+total 40
+-rw-r--r--  1 justinmoy  staff	2185 Nov  6 21:09 commented_commands
+-rw-r--r--  1 justinmoy  staff	1178 Nov  6 21:09 exit_commands
+-rw-r--r--  1 justinmoy  staff	1647 Nov  6 21:37 multi_command.script
+-rwxrwx--x  1 justinmoy  staff	 851 Nov  6 19:24 multi_command.sh
+-rw-r--r--  1 justinmoy  staff	3517 Nov  6 21:09 single_commands
+drwxr-xr-x  2 justinmoy  staff	  68 Nov  6 21:38 testdir
+[justinmoy@Justins-MacBook-Pro-2.local]$ echo testing connectors with spaces &&   pwd	&& echo it works!
+testing connectors with spaces
+/Users/justinmoy/Documents/CS100/Assignment1/rshell/tests
+it works!
+[justinmoy@Justins-MacBook-Pro-2.local]$ echo testing && echo and && echo chaining &&	echo with spaces ; echo and semicolons
+testing
+and
+chaining
+with spaces
+and semicolons
+[justinmoy@Justins-MacBook-Pro-2.local]$ ls l || echo this works! && echo mkdir testdir; ls -l && rmdir testdir ; pwd
+ls: l: No such file or directory
+this works!
+mkdir testdir
+total 40
+-rw-r--r--  1 justinmoy  staff	2185 Nov  6 21:09 commented_commands
+-rw-r--r--  1 justinmoy  staff	1178 Nov  6 21:09 exit_commands
+-rw-r--r--  1 justinmoy  staff	2980 Nov  6 21:39 multi_command.script
+-rwxrwx--x  1 justinmoy  staff	 851 Nov  6 19:24 multi_command.sh
+-rw-r--r--  1 justinmoy  staff	3517 Nov  6 21:09 single_commands
+rmdir: testdir: No such file or directory
+/Users/justinmoy/Documents/CS100/Assignment1/rshell/tests
+[justinmoy@Justins-MacBook-Pro-2.local]$ rmdir testdir && ls -l || echo dont echo
+rmdir: testdir: No such file or directory
+dont echo
+[justinmoy@Justins-MacBook-Pro-2.local]$ ls a || echo failed ls command should run this echo
+ls: a: No such file or directory
+failed ls command should run this echo
+[justinmoy@Justins-MacBook-Pro-2.local]$ echo chaining semicolon ; echo with a failed cmd ; this will fail ; echo this should work!
+chaining semicolon
+with a failed cmd
+execvp errrrr : No such file or directory
+this should work!
+[justinmoy@Justins-MacBook-Pro-2.local]$ lsha && echo this will wont echo || echo this should echo ; pwd
+ls: a: No such file or directory
+this should echo
+/Users/justinmoy/Documents/CS100/Assignment1/rshell/tests
+[justinmoy@Justins-MacBook-Pro-2.local]$ exit
+This is our own custom exit
+bash-3.2$ exit
+exit
+
+Script done on Fri Nov	6 21:41:22 2015
