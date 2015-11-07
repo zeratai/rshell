@@ -23,5 +23,12 @@ Commands with comments work as tested.
 
 #Bugs
 No bugs currently found as tested. Readme updated when bugs are found.
+November 6th, 2015 Bugs
 
+echo "testing with quotes" #this will output "testing with quotes" with the quotation marks - will need to remove later
 
+ls -l && pwd && echo yes! || echo dont output && echo this will fail ; ls -a && pwd #mixing an || following
+an && connector will cause the command to run the && command and will not run the commands after the ;
+
+ls && pwd && echo yes && echo done || echo no ; ls -l #these commands work but our rshell will try to execute a final command
+causing a perror, this needs further investigation
