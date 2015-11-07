@@ -80,7 +80,6 @@ int execute(vector<string> args)
    if (pid < 0)    //error forking
    {
      perror("fork failed");
-     status = -1;
      exit(1);	//exit failure
    }
    else if (pid == 0)  //child process
@@ -95,10 +94,10 @@ int execute(vector<string> args)
 
      if(execvp(command[0], command) == -1 )
      {
-       status = -1;
        perror("execvp errrrr ");
-     } 
-       exit(0);	//exit failure    
+     }
+       status = -1; 
+       exit(1);	//exit failure    
    }
    else if (pid > 0)  //parent process
    {
@@ -107,10 +106,10 @@ int execute(vector<string> args)
        waitpid(pid, &status, WUNTRACED);
        if(WEXITSTATUS(status) == 0)
        {
-       	return status;
+       	return 1;
        }
        else
-       	return status; // Program failed
+       	return -1; // Program failed
      }while(!WIFEXITED(status) && !WIFSIGNALED(status));   
    } 
 
