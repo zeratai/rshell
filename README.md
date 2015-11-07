@@ -22,6 +22,9 @@ Commands with comments work as tested.
 - seem to output only execute errors
 
 #Bugs
-No bugs currently found as tested. Readme updated when bugs are found.
+The echo command outputs the quotes.
+
+No other bugs currently found as tested. Readme updated when more bugs are found.
+
 
 
