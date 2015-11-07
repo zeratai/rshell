@@ -121,6 +121,7 @@ bool secondAndConnector = false;
 bool orConnector = false;
 bool secondOrConnector = false;
 bool semiConnector = false;
+bool commentConnector = false;
 int connectorAndCount = 0;
 int connectorOrCount = 0;
 
@@ -139,6 +140,10 @@ void whichConnector(string c) {
    else if( c == ";") {
    	   semiConnector = true;
    	   //cout << "This is a semicolon connector\n";
+   }
+   else if( c == "#") {
+       commentConnector = true;
+       //cout << "This is a comment connector\n";
    }
 }
 
@@ -180,8 +185,12 @@ bool hasConnector(string c) {
       return true;
    }
    else if( c == ";") {
-   	   semiConnector = true;
+       semiConnector = true;
    	   return true;
+   }
+   else if ( c == "#") {
+       commentConnector = true;
+       return true;
    }
    return false;
 }
@@ -206,7 +215,7 @@ int parseMultipleExec(string inputLine) {
 	vector<string> commandVect;
 	vector<string> parsedVector;
 	//cout << "using multiple parse exec function";
-	char_separator<char> sep(" \r\a\t\n", ";&|");
+	char_separator<char> sep(" \r\a\t\n", ";&|#");
  	tokenizer<char_separator<char> > tokens(inputLine, sep);
 
   	BOOST_FOREACH(string t, tokens)
@@ -218,7 +227,18 @@ int parseMultipleExec(string inputLine) {
   		{
   		//cout << status << "\n";
   		whichConnector(commandVect[i]);
-  		if(andConnector) // Take parsedVector and run the command 
+  		if(commentConnector) {
+  			//cout << "is commentConnector";
+  			status = execute(parsedVector);
+  			while(i < commandVect.size()) {
+  						parsedVector.push_back(commandVect[i]);
+  						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
+  						i++;
+  			} 
+  			parsedVector.clear(); // empty out the rest of the cmds and arguments after #
+  			commentConnector = false; // default back to false for further cmds inputs
+  		}
+  		else if(andConnector) // Take parsedVector and run the command 
   			{
   			//cout << "in and connector \n";
   			// run once for first cmd
@@ -382,7 +402,7 @@ void shell() {
 		
 		inputLine = getInput();
 		
-		if( inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos || inputLine.find("||") != string::npos) {
+		if( inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos) {
 			//cout << "use multiple parse\n";
 			status = parseMultipleExec(inputLine);
 			goto jump;
