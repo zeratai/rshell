@@ -10,7 +10,7 @@ default: $(TARGET)
 all: default
 rshell: default
 
-OBJECTS = main.cpp
+OBJECTS = src/main.cpp
 
 .PRECIOUS: $(TARGET) $(OBJECTS)
 
