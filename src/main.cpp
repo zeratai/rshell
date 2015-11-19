@@ -6,6 +6,9 @@
 #include <cstring>
 #include <sys/wait.h>	//waitpid() and macros
 #include <sys/types.h>
+#include <sys/stat.h>   //stat() successful completion 0 shall be returned. Otherwise, -1 shall be returned and errno set to indicate the error.
+#include <dirent.h>     //DIR, struct dirent
+#include <errno.h>
 #include <vector>
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
@@ -210,7 +213,8 @@ vector<string> parse(string inputLine)
   return vectForTokens;
 }
 
-int parseMultipleExec(string inputLine) {
+int parseMultipleExec(string inputLine) 
+{
 	int status;
 	vector<string> commandVect;
 	vector<string> parsedVector;
@@ -224,13 +228,15 @@ int parseMultipleExec(string inputLine) {
     	//cout << t << "\n";
   	}
   	for(size_t i = 0; i < commandVect.size(); i++) // for loop logic that will run commands 1 at a time based on our parsing 
-  		{
+  	{
   		//cout << status << "\n";
   		whichConnector(commandVect[i]);
-  		if(commentConnector) {
+  		if(commentConnector) 
+  		{
   			//cout << "is commentConnector";
   			status = execute(parsedVector);
-  			while(i < commandVect.size()) {
+  			while(i < commandVect.size()) 
+  			{
   						parsedVector.push_back(commandVect[i]);
   						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
   						i++;
@@ -239,10 +245,11 @@ int parseMultipleExec(string inputLine) {
   			commentConnector = false; // default back to false for further cmds inputs
   		}
   		else if(andConnector) // Take parsedVector and run the command 
-  			{
+  		{
   			//cout << "in and connector \n";
   			// run once for first cmd
-  			if(connectorAndCount == 0) {
+  			if(connectorAndCount == 0) 
+  			{
   				//cout << "executing parsedVector\n";
   				status = execute(parsedVector);
   				//cout << status << "\n";
@@ -250,78 +257,86 @@ int parseMultipleExec(string inputLine) {
   			//clear vector to be rewritten parsedVector
   			parsedVector.clear();
   			if(hasConnector(commandVect[i]) && status != -1) // if it has another connector and status is not -1, run it 
+  			{
+  				connectorAndCount++;
+  				//cout << "and connector count: " << connectorAndCount++ << "\n";
+  				if(hasConnector(commandVect[i]) && secondAndConnector && status != -1) 
   				{
-  					connectorAndCount++;
-  					//cout << "and connector count: " << connectorAndCount++ << "\n";
-  					if(hasConnector(commandVect[i]) && secondAndConnector && status != -1) {
-  						status = execute(parsedVector);
-  						andConnector = false; // reset andConnector to check if cmd ends or if there are more commands
-  						secondAndConnector = false;
-  					} 
-  				}
-  			else if(status == -1) 
-  				{
-  					connectorAndCount++;
-  					//cout << "status is -1, do not run second command\n";
-  					i = i + 2;
-  					//cout << i << "\n";
-  					//cout << j << "\n";
-  					while(!hasConnector(commandVect[i]) && commandVect[i] != ";" && i < commandVect.size()) {
-  						parsedVector.push_back(commandVect[i]);
-  						//cout << "Position i: " << i << "\n" << "command Vector i: " << commandVect[i] << "\n";
-  						i++;
-  					}
-  					parsedVector.clear();
-  					//cout << commandVect[i] << "\n";
-  					whichConnector(commandVect[i]);
-  					size_t j = i;
-  					//cout << "Position j at semicolon check: " << j << "\n";
-  					if(commandVect[i] == ";") {
-  					    //cout << "has semicolon \n";
-  						j = j + 1;
-  					}
-  					else j = j + 2;
-  					//cout << "Position j after semicolon check: " << j << "\n";
-  					while(!hasConnector(commandVect[j]) && commandVect[j] != ";" && j < commandVect.size()) {
-  						parsedVector.push_back(commandVect[j]);
-  						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
-  						j++;
-  					} 
-  					// push next command
-  					// parsedVector.push_back(commandVect[i]);
-  					andConnector = false;
+  					status = execute(parsedVector);
+  					andConnector = false; // reset andConnector to check if cmd ends or if there are more commands
   					secondAndConnector = false;
+  				} 
+  			}
+  			else if(status == -1) 
+  			{
+  				connectorAndCount++;
+  				//cout << "status is -1, do not run second command\n";
+  				i = i + 2;
+  				//cout << i << "\n";
+  				//cout << j << "\n";
+  				while(!hasConnector(commandVect[i]) && commandVect[i] != ";" && i < commandVect.size()) 
+  				{
+  					parsedVector.push_back(commandVect[i]);
+  					//cout << "Position i: " << i << "\n" << "command Vector i: " << commandVect[i] << "\n";
+  					i++;
   				}
+  				parsedVector.clear();
+  				//cout << commandVect[i] << "\n";
+  				whichConnector(commandVect[i]);
+  				size_t j = i;
+  				//cout << "Position j at semicolon check: " << j << "\n";
+  				if(commandVect[i] == ";") 
+  				{
+  				    //cout << "has semicolon \n";
+  					j = j + 1;
+  				}
+  				else j = j + 2;
+  				//cout << "Position j after semicolon check: " << j << "\n";
+  				while(!hasConnector(commandVect[j]) && commandVect[j] != ";" && j < commandVect.size())
+  				{
+  					parsedVector.push_back(commandVect[j]);
+  					//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
+  					j++;
+  				} 
+  				// push next command
+  				// parsedVector.push_back(commandVect[i]);
+  				andConnector = false;
+  				secondAndConnector = false;
+  			}
   			else
   				parsedVector.push_back(commandVect[i]);
   		}
   		else if(orConnector) // Take parsedVector and run the command 
-  			{
+  		{
   			//cout << "in or connector \n" << "Current commandVect: " << commandVect[i] << "\n";
   			// run once for first cmd
-  			if(connectorOrCount == 0) {
+  			if(connectorOrCount == 0) 
+  			{
   				//cout << "executing parsedVector in orConnector\n";
   				status = execute(parsedVector);
   				//cout << status << "\n";
   			}
   			//clear vector to be rewritten parsedVector
   			parsedVector.clear();
-  			if(status == -1) {
+  			if(status == -1) 
+  			{
   				connectorOrCount++;
   				//cout << "or connector count: " << connectorOrCount++ << "\n" << "Status: " << status << "\n";
-  				if(hasConnector(commandVect[i]) && secondOrConnector && status == -1) {
+  				if(hasConnector(commandVect[i]) && secondOrConnector && status == -1) 
+  				{
   						//cout << "Run orConnector cmd\n";
   						//cout << "prasedVector: " << parsedVector[i] << "\n";
   						status = execute(parsedVector);
   						orConnector = false; // reset andConnector to check if cmd ends or if there are more commands
   						secondOrConnector = false;
-  					}
+  				}
   			}
   			else if(hasConnector(commandVect[i]) && status == -1) // if it has another connector and status is -1, run it 
   				{
   					connectorOrCount++;
   					//cout << "or connector count: " << connectorOrCount++ << "\n" << "Status: " << status << "\n";
-  					if(hasConnector(commandVect[i]) && secondOrConnector && status == -1) {
+  					if(hasConnector(commandVect[i]) && secondOrConnector && status == -1) 
+  					{
   						//cout << "Run orConnector cmd\n";
   						//cout << "prasedVector: " << parsedVector[i] << "\n";
   						status = execute(parsedVector);
@@ -337,7 +352,8 @@ int parseMultipleExec(string inputLine) {
   					//cout << i << "\n";
   					//cout << j << "\n";
   					//Push all the failed commands following after the orConnector fails
-  					while(commandVect[i] != ";" && i < commandVect.size()) {
+  					while(commandVect[i] != ";" && i < commandVect.size()) 
+  					{
   						parsedVector.push_back(commandVect[i]);
   						//cout << "Position i: " << i << "\n" << "command Vector i: " << commandVect[i] << "\n";
   						i++;
@@ -347,13 +363,15 @@ int parseMultipleExec(string inputLine) {
   					whichConnector(commandVect[i]);
   					size_t j = i;
   					//cout << "Position j at semicolon check: " << j << "\n";
-  					if(commandVect[i] == ";") {
+  					if(commandVect[i] == ";") 
+  					{
   					    //cout << "has semicolon \n";
   						j = j + 1;
   					}
   					else j = j + 2;
   					//cout << "Position j after semicolon check: " << j << "\n";
-  					while(!hasConnector(commandVect[j]) && commandVect[j] != ";" && j < commandVect.size()) {
+  					while(!hasConnector(commandVect[j]) && commandVect[j] != ";" && j < commandVect.size()) 
+  					{
   						parsedVector.push_back(commandVect[j]);
   						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
   						j++;
@@ -363,12 +381,14 @@ int parseMultipleExec(string inputLine) {
   					orConnector = false;
   					secondOrConnector = false;
   				}
-  			else {
+  			else 
+  			{
   				//cout << "Pushing into prasedVector: " << parsedVector[i] << "\n";
   				parsedVector.push_back(commandVect[i]);
   			}
   		}
-  		else if(semiConnector) {
+  		else if(semiConnector) 
+  		{
   			//cout << "is SemiConnector";
   			status = execute(parsedVector);
   			parsedVector.clear();
@@ -376,11 +396,14 @@ int parseMultipleExec(string inputLine) {
   			whichConnector(commandVect[i]);
   			semiConnector = false; // default back to false for looping
   		}
-  		else {
+  		else 
+  		{
   			parsedVector.push_back(commandVect[i]);
   		}
   	}
-  	if(!parsedVector.empty()) {
+  	
+  	if(!parsedVector.empty()) 
+  	{
   		//cout << "Executing final cmd without semicolon\n";
   		status = execute(parsedVector);
   	}
@@ -391,7 +414,248 @@ int parseMultipleExec(string inputLine) {
   	return status;
 }
 
-void shell() {
+void singleTest(string inputLine)
+{
+  int status;
+  vector<string> commandVect;
+  vector<string> parsedVector;
+
+  char_separator<char> sep(" \r\a\t\n");
+  tokenizer<char_separator<char> > tokens(inputLine, sep);
+
+  BOOST_FOREACH(string t, tokens)
+  {
+    commandVect.push_back(t);
+    cout << t << endl;
+  }
+  
+  
+  /*
+    DIR *tem = opendir(dirname);
+    struct dirent *direntp;
+    struct stat buf;
+    char t[256];
+    
+    if(tem==NULL)
+    {
+        fprintf(stderr,"ls: cannot open %s\n",dirname);
+    }
+    else
+    {
+        while((direntp=readdir(tem))!=NULL)
+        {
+            strcpy(t,dirname);
+            printf("%s\n",direntp->d_name);
+            strcat(t,"/");
+            strcat(t,direntp->d_name);
+            if(stat(t,&buf) < 0)
+            {
+                perror("");
+                break;
+            }
+            else
+            {
+                show_file_info(&buf);
+            }
+        }
+        closedir(tem);
+    }
+
+  */
+  
+  	
+  if(commandVect.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
+  {
+    struct stat buf;
+    status = stat(commandVect[1].c_str(), &buf);  //stat returns 0 if succesful
+    cout << "status stat " << status << endl;
+  }
+        
+   if(commandVect.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
+   {
+       /*
+        char dirname[64];
+        strcpy(dirname, commandVect[2].c_str());
+        
+        DIR *tem = opendir(dirname);
+        struct dirent *direntp;
+        struct stat buf;
+       
+       
+        while(  (direntp = readdir(tem) ) != NULL )
+        {
+                        
+             struct stat buf;
+             status = stat(commandVect[2].c_str(), &buf);
+             if(commandVect[1] == "-e")
+             {
+              // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+               cout << "status stat " << status << endl;
+             }
+        
+             else if(commandVect[1] == "-f")
+             {   
+              //  status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+                cout << "status stat " << status << endl;
+        
+                 // stat(commandVect[2].c_str(), &buf);
+                if( S_ISREG(buf.st_mode == 0) ) // checks for regular file
+                  cout << "Is not a regular file " << endl;
+                else
+                  cout << "Is a regular file " << endl; 
+             }
+          
+             else if(commandVect[1] == "-d")
+             {
+              // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+               cout << "status stat " << status << endl;
+        
+               if(S_ISDIR(buf.st_mode == 0) )  //checks for dir
+                 cout << "Is not a dir " << endl;
+               else
+                 cout << "Is a dir " << endl;
+             }
+             else if(commandVect[1] != "-e" || commandVect[1] != "-f" || commandVect[1] != "-d")
+             {
+               cout << "wrong flag syntax, defaulting to -e " << endl;
+        
+              // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+               cout << "status stat " << status << endl;
+        
+               //cout << "wrong flag syntax, defaulting to -e " << endl;
+              //exit(1); // exit failure
+             }  
+            
+        }
+        closedir(tem);
+       */   
+           
+       
+       
+       
+        //S_ISREG(m) and S_ISDIR macros return 0 if false, non-zero if true
+        //m = buf.st_mode
+         struct stat buf;
+         status = stat(commandVect[2].c_str(), &buf);
+    
+         if(commandVect[1] == "-e")
+         {
+          // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+           cout << "status stat " << status << endl;
+         }
+    
+         else if(commandVect[1] == "-f")
+         {   
+          //  status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+            cout << "status stat " << status << endl;
+    
+             // stat(commandVect[2].c_str(), &buf);
+            if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
+              cout << "Is not a regular file " << endl;
+            else
+              cout << "Is a regular file " << endl; 
+         }
+      
+         else if(commandVect[1] == "-d")
+         {
+          // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+           cout << "status stat " << status << endl;
+    
+           if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
+             cout << "Is not a dir " << endl;
+           else
+             cout << "Is a dir " << endl;
+         }
+         else if(commandVect[1] != "-e" || commandVect[1] != "-f" || commandVect[1] != "-d")
+         {
+           cout << "wrong flag syntax, defaulting to -e " << endl;
+    
+          // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+           cout << "status stat " << status << endl;
+    
+           //cout << "wrong flag syntax, defaulting to -e " << endl;
+          //exit(1); // exit failure
+         }  
+       
+   }
+}
+
+void singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
+{
+  int status;
+  vector<string> commandVect;
+  vector<string> parsedVector;
+
+  char_separator<char> sep(" \r\a\t\n[]");
+  tokenizer<char_separator<char> > tokens(inputLine, sep);
+
+  BOOST_FOREACH(string t, tokens)
+  {
+    commandVect.push_back(t);
+    cout << t << endl;
+  }
+  	
+  if(commandVect.size() == 1)   //only test:  /some/thing, not -'flag' /some/thing
+  {
+    struct stat buf;
+    status = stat(commandVect[0].c_str(), &buf);  //stat returns 0 if succesful
+    cout << "status stat " << status << endl;
+  }
+        
+   if(commandVect.size() == 2)   //there are 2 args:  -'flag' /some/bull/shit
+   {    
+          
+        //S_ISREG(m) and S_ISDIR macros return 0 if false, non-zero if true
+        //m = buf.st_mode
+         struct stat buf;
+         status = stat(commandVect[1].c_str(), &buf);
+    
+         if(commandVect[0] == "-e")
+         {
+          // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+           cout << "status stat " << status << endl;
+         }
+    
+         else if(commandVect[0] == "-f")
+         {   
+          //  status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+            cout << "status stat " << status << endl;
+    
+             // stat(commandVect[2].c_str(), &buf);
+            if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
+              cout << "Is not a regular file " << endl;
+            else
+              cout << "Is a regular file " << endl; 
+         }
+      
+         else if(commandVect[0] == "-d")
+         {
+          // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+           cout << "status stat " << status << endl;
+    
+           if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
+             cout << "Is not a dir " << endl;
+           else
+             cout << "Is a dir " << endl;
+         }
+         else if(commandVect[0] != "-e" || commandVect[0] != "-f" || commandVect[0] != "-d")
+         {
+           cout << "wrong flag syntax, defaulting to -e " << endl;
+    
+          // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
+           cout << "status stat " << status << endl;
+    
+           //cout << "wrong flag syntax, defaulting to -e " << endl;
+          //exit(1); // exit failure
+         }  
+       
+   }
+}
+
+
+
+void shell() 
+{
 	string inputLine;
 	vector<string> args;
 	int status;
@@ -405,10 +669,25 @@ void shell() {
 		
 		inputLine = getInput();
 		
-		if( inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos) {
+		if( inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos) 
+		{
 			//cout << "use multiple parse\n";
 			status = parseMultipleExec(inputLine);
 			goto jump;
+		}
+		
+		//look for test cmd, single cmd without connectors
+		if( inputLine.find("test") != string::npos)
+		{
+		    singleTest(inputLine);
+		    goto jump;
+		}
+                
+               	//look for [] test cmd, single cmd without connectors
+		if( inputLine.find("[") != string::npos && inputLine.find("]") != string::npos)
+		{
+		    singleBracTest(inputLine);
+		    goto jump;
 		}
 		
 		args = parse(inputLine);
@@ -418,7 +697,8 @@ void shell() {
 	while(status);
 }
 
-int main (int argc, char** argv) {
+int main (int argc, char** argv) 
+{
 	shell();
 	return 0;
 }
