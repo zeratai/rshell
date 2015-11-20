@@ -150,7 +150,7 @@ void whichConnector(string c) {
        commentConnector = true;
        //cout << "This is a comment connector\n";
    }
-   else if( c == "test") {
+   else if( c == "test" || c == "[") {
    		testProgram = true;
    		cout << "This is a test program\n";
    }
@@ -225,7 +225,7 @@ int parseMultipleExec(string inputLine)
 	vector<string> commandVect;
 	vector<string> parsedVector;
 	//cout << "using multiple parse exec function";
-	char_separator<char> sep(" \r\a\t\n", ";&|#");
+	char_separator<char> sep(" \r\a\t\n]", ";&|#");
  	tokenizer<char_separator<char> > tokens(inputLine, sep);
 
   	BOOST_FOREACH(string t, tokens)
@@ -235,30 +235,33 @@ int parseMultipleExec(string inputLine)
   	}
   	for(size_t i = 0; i < commandVect.size(); i++) // for loop logic that will run commands 1 at a time based on our parsing 
   	{
+              //  int statusTest;
+    
   		//cout << status << "\n";
   		whichConnector(commandVect[i]);
-  		if(testProgram) {
+  		if(testProgram)
+                {
   			//parsedVector.clear();
   			//cout << "You are in test program \n";
   			// run once for first cmd
   			if(hasConnector(commandVect[i])) // if it has another connector and status is not -1, run it 
   			{
   				for(size_t i = 0; i < parsedVector.size(); i++) {
-  				cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
+  				  cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
   				}
   				cout << "has connector stop pushing and execute test \n";
   				//status = execute(parsedVector);
   				if(parsedVector.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   				{
-    				struct stat buf;
-    				status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
-    				cout << "status stat " << status << endl;
+    				  struct stat buf;
+    				  status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
+    				  cout << "status stat " << status << endl;
   				}
         
    				if(parsedVector.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
    				{
-         			struct stat buf;
-         			status = stat(parsedVector[2].c_str(), &buf);
+         			  struct stat buf;
+         			  status = stat(parsedVector[2].c_str(), &buf);
     
          				if(parsedVector[1] == "-e")
          				{
@@ -267,10 +270,10 @@ int parseMultipleExec(string inputLine)
     
          				else if(parsedVector[1] == "-f")
          				{   
-            				cout << "status stat " << status << endl;
-    			            if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
+                     				cout << "status stat " << status << endl;
+    			                      if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
               					cout << "Is not a regular file " << endl;
-            				else
+            				      else
               					cout << "Is a regular file " << endl; 
          				}
       
@@ -286,30 +289,31 @@ int parseMultipleExec(string inputLine)
          				else if(parsedVector[1] != "-e" || parsedVector[1] != "-f" || parsedVector[1] != "-d")
          				{
            					cout << "wrong flag syntax, defaulting to -e " << endl;
-               				cout << "status stat " << status << endl;
+               				        cout << "status stat " << status << endl;
          				}  
    				}
    				testProgram = false;
    				parsedVector.clear();
   			}
   			else if(i+1 >= commandVect.size()) {
+                                
   				parsedVector.push_back(commandVect[i]);
   				for(size_t i = 0; i < parsedVector.size(); i++) {
-  				cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
+  				  cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
   				}
   				cout << "has connector stop pushing and execute test \n";
   				//status = execute(parsedVector);
   				if(parsedVector.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   				{
-    				struct stat buf;
-    				status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
-    				cout << "status stat " << status << endl;
+    				  struct stat buf;
+    				  status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
+    				  cout << "status stat " << status << endl;
   				}
         
    				if(parsedVector.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
    				{
-         			struct stat buf;
-         			status = stat(parsedVector[2].c_str(), &buf);
+         			  struct stat buf;
+         			  status = stat(parsedVector[2].c_str(), &buf);
     
          				if(parsedVector[1] == "-e")
          				{
@@ -318,10 +322,10 @@ int parseMultipleExec(string inputLine)
     
          				else if(parsedVector[1] == "-f")
          				{   
-            				cout << "status stat " << status << endl;
-    			            if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
+            				       cout << "status stat " << status << endl;
+    			                     if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
               					cout << "Is not a regular file " << endl;
-            				else
+            			             else
               					cout << "Is a regular file " << endl; 
          				}
       
@@ -329,15 +333,15 @@ int parseMultipleExec(string inputLine)
          				{
            					cout << "status stat " << status << endl;
     
-           					if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
+           				    if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              					cout << "Is not a dir " << endl;
-           					else
+           			            else
              					cout << "Is a dir " << endl;
          				}
          				else if(parsedVector[1] != "-e" || parsedVector[1] != "-f" || parsedVector[1] != "-d")
          				{
            					cout << "wrong flag syntax, defaulting to -e " << endl;
-               				cout << "status stat " << status << endl;
+               				        cout << "status stat " << status << endl;
          				} 
          			}
          		testProgram = false;
@@ -347,7 +351,7 @@ int parseMultipleExec(string inputLine)
   			//else
   			//	parsedVector.push_back(commandVect[i]);
   		}
-  		if(commentConnector) 
+  		 if(commentConnector) 
   		{
   			//cout << "is commentConnector";
   			status = execute(parsedVector);
@@ -690,14 +694,24 @@ void shell()
 			cout << "[" << getlogin() << "@" << hostName << "]" << "$ ";
 		
 		inputLine = getInput();
-		
-		if( inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos) 
+		/*
+		if( inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos || inputLine.find("||") != string::npos
+                    || inputLine.find("#") != string::npos) 
 		{
 			//cout << "use multiple parse\n";
 			status = parseMultipleExec(inputLine);
 			goto jump;
-		}
+		}    */
 		
+                //also find [, for bracket test
+               	if( inputLine.find("[") != string::npos || inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos
+                     || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos) 
+		{
+			//cout << "use multiple parse\n";
+			status = parseMultipleExec(inputLine);
+			goto jump;
+		}      
+     
 		//look for test cmd, single cmd without connectors
 		else if( inputLine.find("test") != string::npos)
 		{
