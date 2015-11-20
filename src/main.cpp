@@ -125,8 +125,10 @@ bool orConnector = false;
 bool secondOrConnector = false;
 bool semiConnector = false;
 bool commentConnector = false;
+bool testProgram = false;
 int connectorAndCount = 0;
 int connectorOrCount = 0;
+int testRun = 0;
 
 void whichConnector(string c) {
 	
@@ -147,6 +149,10 @@ void whichConnector(string c) {
    else if( c == "#") {
        commentConnector = true;
        //cout << "This is a comment connector\n";
+   }
+   else if( c == "test") {
+   		testProgram = true;
+   		cout << "This is a test program\n";
    }
 }
 
@@ -231,6 +237,116 @@ int parseMultipleExec(string inputLine)
   	{
   		//cout << status << "\n";
   		whichConnector(commandVect[i]);
+  		if(testProgram) {
+  			//parsedVector.clear();
+  			//cout << "You are in test program \n";
+  			// run once for first cmd
+  			if(hasConnector(commandVect[i])) // if it has another connector and status is not -1, run it 
+  			{
+  				for(size_t i = 0; i < parsedVector.size(); i++) {
+  				cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
+  				}
+  				cout << "has connector stop pushing and execute test \n";
+  				//status = execute(parsedVector);
+  				if(parsedVector.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
+  				{
+    				struct stat buf;
+    				status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
+    				cout << "status stat " << status << endl;
+  				}
+        
+   				if(parsedVector.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
+   				{
+         			struct stat buf;
+         			status = stat(parsedVector[2].c_str(), &buf);
+    
+         				if(parsedVector[1] == "-e")
+         				{
+         					cout << "status stat " << status << endl;
+         				}
+    
+         				else if(parsedVector[1] == "-f")
+         				{   
+            				cout << "status stat " << status << endl;
+    			            if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
+              					cout << "Is not a regular file " << endl;
+            				else
+              					cout << "Is a regular file " << endl; 
+         				}
+      
+         				else if(parsedVector[1] == "-d")
+         				{
+           					cout << "status stat " << status << endl;
+    
+           					if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
+             					cout << "Is not a dir " << endl;
+           					else
+             					cout << "Is a dir " << endl;
+         				}
+         				else if(parsedVector[1] != "-e" || parsedVector[1] != "-f" || parsedVector[1] != "-d")
+         				{
+           					cout << "wrong flag syntax, defaulting to -e " << endl;
+               				cout << "status stat " << status << endl;
+         				}  
+   				}
+   				testProgram = false;
+   				parsedVector.clear();
+  			}
+  			else if(i+1 >= commandVect.size()) {
+  				parsedVector.push_back(commandVect[i]);
+  				for(size_t i = 0; i < parsedVector.size(); i++) {
+  				cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
+  				}
+  				cout << "has connector stop pushing and execute test \n";
+  				//status = execute(parsedVector);
+  				if(parsedVector.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
+  				{
+    				struct stat buf;
+    				status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
+    				cout << "status stat " << status << endl;
+  				}
+        
+   				if(parsedVector.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
+   				{
+         			struct stat buf;
+         			status = stat(parsedVector[2].c_str(), &buf);
+    
+         				if(parsedVector[1] == "-e")
+         				{
+         					cout << "status stat " << status << endl;
+         				}
+    
+         				else if(parsedVector[1] == "-f")
+         				{   
+            				cout << "status stat " << status << endl;
+    			            if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
+              					cout << "Is not a regular file " << endl;
+            				else
+              					cout << "Is a regular file " << endl; 
+         				}
+      
+         				else if(parsedVector[1] == "-d")
+         				{
+           					cout << "status stat " << status << endl;
+    
+           					if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
+             					cout << "Is not a dir " << endl;
+           					else
+             					cout << "Is a dir " << endl;
+         				}
+         				else if(parsedVector[1] != "-e" || parsedVector[1] != "-f" || parsedVector[1] != "-d")
+         				{
+           					cout << "wrong flag syntax, defaulting to -e " << endl;
+               				cout << "status stat " << status << endl;
+         				} 
+         			}
+         		testProgram = false;
+   				parsedVector.clear();
+   				break;
+  			}
+  			//else
+  			//	parsedVector.push_back(commandVect[i]);
+  		}
   		if(commentConnector) 
   		{
   			//cout << "is commentConnector";
@@ -398,6 +514,7 @@ int parseMultipleExec(string inputLine)
   		}
   		else 
   		{
+  			//cout << "pushing onto parsedVector \n";
   			parsedVector.push_back(commandVect[i]);
   		}
   	}
@@ -414,9 +531,9 @@ int parseMultipleExec(string inputLine)
   	return status;
 }
 
-void singleTest(string inputLine)
+int singleTest(string inputLine)
 {
-  int status;
+  int status = -1;
   vector<string> commandVect;
   vector<string> parsedVector;
 
@@ -428,42 +545,7 @@ void singleTest(string inputLine)
     commandVect.push_back(t);
     cout << t << endl;
   }
-  
-  
-  /*
-    DIR *tem = opendir(dirname);
-    struct dirent *direntp;
-    struct stat buf;
-    char t[256];
-    
-    if(tem==NULL)
-    {
-        fprintf(stderr,"ls: cannot open %s\n",dirname);
-    }
-    else
-    {
-        while((direntp=readdir(tem))!=NULL)
-        {
-            strcpy(t,dirname);
-            printf("%s\n",direntp->d_name);
-            strcat(t,"/");
-            strcat(t,direntp->d_name);
-            if(stat(t,&buf) < 0)
-            {
-                perror("");
-                break;
-            }
-            else
-            {
-                show_file_info(&buf);
-            }
-        }
-        closedir(tem);
-    }
 
-  */
-  
-  	
   if(commandVect.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   {
     struct stat buf;
@@ -473,68 +555,6 @@ void singleTest(string inputLine)
         
    if(commandVect.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
    {
-       /*
-        char dirname[64];
-        strcpy(dirname, commandVect[2].c_str());
-        
-        DIR *tem = opendir(dirname);
-        struct dirent *direntp;
-        struct stat buf;
-       
-       
-        while(  (direntp = readdir(tem) ) != NULL )
-        {
-                        
-             struct stat buf;
-             status = stat(commandVect[2].c_str(), &buf);
-             if(commandVect[1] == "-e")
-             {
-              // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-               cout << "status stat " << status << endl;
-             }
-        
-             else if(commandVect[1] == "-f")
-             {   
-              //  status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-                cout << "status stat " << status << endl;
-        
-                 // stat(commandVect[2].c_str(), &buf);
-                if( S_ISREG(buf.st_mode == 0) ) // checks for regular file
-                  cout << "Is not a regular file " << endl;
-                else
-                  cout << "Is a regular file " << endl; 
-             }
-          
-             else if(commandVect[1] == "-d")
-             {
-              // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-               cout << "status stat " << status << endl;
-        
-               if(S_ISDIR(buf.st_mode == 0) )  //checks for dir
-                 cout << "Is not a dir " << endl;
-               else
-                 cout << "Is a dir " << endl;
-             }
-             else if(commandVect[1] != "-e" || commandVect[1] != "-f" || commandVect[1] != "-d")
-             {
-               cout << "wrong flag syntax, defaulting to -e " << endl;
-        
-              // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-               cout << "status stat " << status << endl;
-        
-               //cout << "wrong flag syntax, defaulting to -e " << endl;
-              //exit(1); // exit failure
-             }  
-            
-        }
-        closedir(tem);
-       */   
-           
-       
-       
-       
-        //S_ISREG(m) and S_ISDIR macros return 0 if false, non-zero if true
-        //m = buf.st_mode
          struct stat buf;
          status = stat(commandVect[2].c_str(), &buf);
     
@@ -578,11 +598,12 @@ void singleTest(string inputLine)
          }  
        
    }
+   return status;
 }
 
-void singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
+int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
 {
-  int status;
+  int status = -1;
   vector<string> commandVect;
   vector<string> parsedVector;
 
@@ -650,6 +671,7 @@ void singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
          }  
        
    }
+   return status;
 }
 
 
@@ -677,14 +699,15 @@ void shell()
 		}
 		
 		//look for test cmd, single cmd without connectors
-		if( inputLine.find("test") != string::npos)
+		else if( inputLine.find("test") != string::npos)
 		{
+			//cout << "It is running single test cmd\n";
 		    singleTest(inputLine);
 		    goto jump;
 		}
                 
                	//look for [] test cmd, single cmd without connectors
-		if( inputLine.find("[") != string::npos && inputLine.find("]") != string::npos)
+		else if( inputLine.find("[") != string::npos && inputLine.find("]") != string::npos)
 		{
 		    singleBracTest(inputLine);
 		    goto jump;
