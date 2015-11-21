@@ -1,9 +1,3 @@
-<<<<<<< .merge_file_C9vbg6
-<<<<<<< .merge_file_Q4JKgX
-
-
-=======
->>>>>>> .merge_file_8DhcH7
 
 Student 1: Adrian Dy
 
@@ -20,7 +14,6 @@ Exit command works. When using the script commands in test cases, need to type e
 but outside of script, exit is flawless as tested with script command.
 
 Commands with comments work as tested.
-<<<<<<< .merge_file_C9vbg6
 
 
 
@@ -32,9 +25,7 @@ Commands with comments work as tested.
 
 
 
-=======
 
->>>>>>> .merge_file_8DhcH7
 #Limitations
 - cannot run sh scripts
 - no cd yet
