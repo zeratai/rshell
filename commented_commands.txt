@@ -1,0 +1,52 @@
+Script started on Fri 06 Nov 2015 08:25:44 PM PST
+]0;ady002@hammer:~/CS100/HW/rshell[?1034h[ady002@hammer rshell]$ ./bin/rshell
+[ady002@hammer.cs.ucr.edu]$ ls #This is ls
+bin  commented_commands.sh  commented_commands.txt  main  Makefile  README.md  single_commands	single_commands.sh  single_commands.txt  src  tests
+[ady002@hammer.cs.ucr.edu]$ pwd #This is pwd
+/home/csmajs/ady002/CS100/HW/rshell
+[ady002@hammer.cs.ucr.edu]$ ls -a; ls -l; # ls-a   -a then ls -l YO
+.  ..  bin  commented_commands.sh  commented_commands.txt  .git  main  Makefile  README.md  single_commands  single_commands.sh  single_commands.txt  src  tests
+total 112
+drwxr-xr-x 2 ady002 csmajs  4096 Nov  6 20:18 bin
+-rwxr-xr-x 1 ady002 csmajs   214 Nov  5 21:25 commented_commands.sh
+-rw-r--r-- 1 ady002 csmajs     0 Nov  6 20:25 commented_commands.txt
+-rwxr-xr-x 1 ady002 csmajs 75641 Nov  6 17:06 main
+-rw-r--r-- 1 ady002 csmajs   375 Nov  6 20:13 Makefile
+-rw-r--r-- 1 ady002 csmajs   466 Nov  6 19:25 README.md
+-rw-r--r-- 1 ady002 csmajs  1434 Nov  5 11:44 single_commands
+-rwxr-xr-x 1 ady002 csmajs   183 Nov  5 21:14 single_commands.sh
+-rw-r--r-- 1 ady002 csmajs  3642 Nov  6 20:22 single_commands.txt
+drwxr-xr-x 2 ady002 csmajs  4096 Nov  6 20:18 src
+drwxr-xr-x 2 ady002 csmajs  4096 Nov  6 20:23 tests
+[ady002@hammer.cs.ucr.edu]$ exh  cho "hello" && echo "goodbye" # thers  se are echoes
+"hello"
+"goodbye"
+[ady002@hammer.cs.ucr.edu]$ git status || echo "again" #or connector then comment
+# On branch justin
+# Your branch is ahead of 'origin/justin' by 13 commits.
+#
+# Changed but not updated:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   src/main.cpp
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	bin/
+#	commented_commands.sh
+#	commented_commands.txt
+#	main
+#	single_commands
+#	single_commands.sh
+#	single_commands.txt
+#	src/.main.cpp.swp
+#	tests/
+no changes added to commit (use "git add" and/or "git commit -a")
+execvp errrrr : No such file or directory
+[ady002@hammer.cs.ucr.edu]$ exit
+This is our own custom exit 
+]0;ady002@hammer:~/CS100/HW/rshell[ady002@hammer rshell]$ exit
+
+Script done on Fri 06 Nov 2015 08:27:47 PM PST

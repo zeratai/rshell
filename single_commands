@@ -1,0 +1,38 @@
+Script started on Thu 05 Nov 2015 11:43:00 AM PST
+]0;ady002@hammer:~/CS100/HW/rshell[?1034h[ady002@hammer rshell]$ ./main
+[ady002@ hammer.cs.ucr.edu]$ ls
+main  main.cpp	README.md  single_commands  src  tests
+[ady002@ hammer.cs.ucr.edu]$ pwd
+/home/csmajs/ady002/CS100/HW/rshell
+[ady002@ hammer.cs.ucr.edu]$ mkdir random
+[ady002@ hammer.cs.ucr.edu]$ ls
+main  main.cpp	random	README.md  single_commands  src  tests
+[ady002@ hammer.cs.ucr.edu]$ rmdir random
+[ady002@ hammer.cs.ucr.edu]$ git status
+# On branch execute
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   main
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	single_commands
+#	src/
+[ady002@ hammer.cs.ucr.edu]$ ls -a 
+.  ..  .git  main  main.cpp  README.md	single_commands  src  tests
+[ady002@ hammer.cs.ucr.edu]$ ls -l
+total 100
+-rwxr-xr-x 1 ady002 csmajs 75641 Nov  5 11:30 main
+-rw-r--r-- 1 ady002 csmajs 10671 Nov  4 17:23 main.cpp
+-rw-r--r-- 1 ady002 csmajs    61 Oct 22 21:36 README.md
+-rw-r--r-- 1 ady002 csmajs     0 Nov  5 11:43 single_commands
+drwxr-xr-x 2 ady002 csmajs  4096 Nov  5 11:32 src
+drwxr-xr-x 2 ady002 csmajs  4096 Nov  5 11:28 tests
+[ady002@ hammer.cs.ucr.edu]$ echo "hello"
+"hello"
+[ady002@ hammer.cs.ucr.edu]$ exit
+]0;ady002@hammer:~/CS100/HW/rshell[ady002@hammer rshell]$ exit
+
+Script done on Thu 05 Nov 2015 11:44:35 AM PST
