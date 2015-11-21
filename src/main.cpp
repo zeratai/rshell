@@ -468,11 +468,13 @@ int parseMultipleExec(string inputLine)
   				{
   					connectorOrCount++;
   					//cout << "status is -1, do not run second command\n";
+  					if(i + 2 < commandVect.size()) {
   					i = i + 2;
+                                        }
   					//cout << i << "\n";
   					//cout << j << "\n";
   					//Push all the failed commands following after the orConnector fails
-  					while(commandVect[i] != ";" && i < commandVect.size()) 
+  					while(!commandVect[i].compare(";") || i < commandVect.size()) 
   					{
   						parsedVector.push_back(commandVect[i]);
   						//cout << "Position i: " << i << "\n" << "command Vector i: " << commandVect[i] << "\n";
@@ -483,14 +485,14 @@ int parseMultipleExec(string inputLine)
   					whichConnector(commandVect[i]);
   					size_t j = i;
   					//cout << "Position j at semicolon check: " << j << "\n";
-  					if(commandVect[i] == ";") 
+  					if(commandVect[i].compare(";")) 
   					{
   					    //cout << "has semicolon \n";
   						j = j + 1;
   					}
   					else j = j + 2;
   					//cout << "Position j after semicolon check: " << j << "\n";
-  					while(!hasConnector(commandVect[j]) && commandVect[j] != ";" && j < commandVect.size()) 
+  					while((!hasConnector(commandVect[j]) && !commandVect[j].compare(";")) || j < commandVect.size()) 
   					{
   						parsedVector.push_back(commandVect[j]);
   						//cout << "Position j: " << j << "\n" << "command Vector j: " << commandVect[j] << "\n";
@@ -500,6 +502,7 @@ int parseMultipleExec(string inputLine)
   					// parsedVector.push_back(commandVect[i]);
   					orConnector = false;
   					secondOrConnector = false;
+                                        break;
   				}
   			else 
   			{
@@ -523,7 +526,7 @@ int parseMultipleExec(string inputLine)
   		}
   	}
   	
-  	if(!parsedVector.empty()) 
+  	if(!parsedVector.empty() && parsedVector.size() > 0) 
   	{
   		//cout << "Executing final cmd without semicolon\n";
   		status = execute(parsedVector);
