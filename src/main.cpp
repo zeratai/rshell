@@ -153,7 +153,7 @@ void whichConnector(string c) {
    }
    else if( c == "test" || c == "[") {
    		testProgram = true;
-   		cout << "This is a test program\n";
+   	//	cout << "This is a test program\n";
    }
 }
 
@@ -248,15 +248,15 @@ int parseMultipleExec(string inputLine)
   			if(hasConnector(commandVect[i])) // if it has another connector and status is not -1, run it 
   			{
   				for(size_t i = 0; i < parsedVector.size(); i++) {
-  				  cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
+  		//		  cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
   				}
-  				cout << "has connector stop pushing and execute test \n";
+  			//	cout << "has connector stop pushing and execute test \n";
   				//status = execute(parsedVector);
   				if(parsedVector.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   				{
     				  struct stat buf;
     				  status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
-    				  cout << "status stat " << status << endl;
+    				  cout << "status stat, 0 = file/dir exists-- " << status << endl;
   				}
         
    				if(parsedVector.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
@@ -266,12 +266,13 @@ int parseMultipleExec(string inputLine)
     
          				if(parsedVector[1] == "-e")
          				{
-         					cout << "status stat " << status << endl;
+         				      cout << "status stat, 0 = file/dir exists-- " << status << endl;
          				}
     
          				else if(parsedVector[1] == "-f")
          				{   
-                     				cout << "status stat " << status << endl;
+                     			      cout << "status stat, 0 = file/dir exists-- " << status << endl;
+
     			                      if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
               					cout << "Is not a regular file " << endl;
             				      else
@@ -280,8 +281,8 @@ int parseMultipleExec(string inputLine)
       
          				else if(parsedVector[1] == "-d")
          				{
-           					cout << "status stat " << status << endl;
-    
+           					cout << "status stat, 0 = file/dir exists-- " << status << endl;
+                                                    
            					if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              					cout << "Is not a dir " << endl;
            					else
@@ -290,7 +291,7 @@ int parseMultipleExec(string inputLine)
          				else if(parsedVector[1] != "-e" || parsedVector[1] != "-f" || parsedVector[1] != "-d")
          				{
            					cout << "wrong flag syntax, defaulting to -e " << endl;
-               				        cout << "status stat " << status << endl;
+               				        cout << "status stat, 0 = file/dir exists-- " << status << endl;
          				}  
    				}
    				testProgram = false;
@@ -299,16 +300,16 @@ int parseMultipleExec(string inputLine)
   			else if(i+1 >= commandVect.size()) {
                                 
   				parsedVector.push_back(commandVect[i]);
-  				for(size_t i = 0; i < parsedVector.size(); i++) {
-  				  cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
-  				}
-  				cout << "has connector stop pushing and execute test \n";
+  			//	for(size_t i = 0; i < parsedVector.size(); i++) {
+  			//	  cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
+  			//	}
+  			//	cout << "has connector stop pushing and execute test \n";
   				//status = execute(parsedVector);
   				if(parsedVector.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   				{
     				  struct stat buf;
     				  status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
-    				  cout << "status stat " << status << endl;
+    				  cout << "status stat, 0 = file/dir exists-- " << status << endl;
   				}
         
    				if(parsedVector.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
@@ -318,12 +319,12 @@ int parseMultipleExec(string inputLine)
     
          				if(parsedVector[1] == "-e")
          				{
-         					cout << "status stat " << status << endl;
+         					cout << "status stat, 0 = file/dir exists-- " << status << endl;
          				}
     
          				else if(parsedVector[1] == "-f")
          				{   
-            				       cout << "status stat " << status << endl;
+            				       cout << "status stat, 0 = file/dir exists-- " << status << endl;
     			                     if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
               					cout << "Is not a regular file " << endl;
             			             else
@@ -332,7 +333,7 @@ int parseMultipleExec(string inputLine)
       
          				else if(parsedVector[1] == "-d")
          				{
-           					cout << "status stat " << status << endl;
+           					cout << "status stat, 0 = file/dir exists-- " << status << endl;
     
            				    if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              					cout << "Is not a dir " << endl;
@@ -342,7 +343,7 @@ int parseMultipleExec(string inputLine)
          				else if(parsedVector[1] != "-e" || parsedVector[1] != "-f" || parsedVector[1] != "-d")
          				{
            					cout << "wrong flag syntax, defaulting to -e " << endl;
-               				        cout << "status stat " << status << endl;
+               				        cout << "status stat, 0 = file/dir exits-- " << status << endl;
          				} 
          			}
          		testProgram = false;
@@ -392,7 +393,7 @@ int parseMultipleExec(string inputLine)
   			{
   				connectorAndCount++;
   				//cout << "status is -1, do not run second command\n";
-  				i = i + 2;
+                           	  i = i + 2;
   				//cout << i << "\n";
   				//cout << j << "\n";
   				while(!hasConnector(commandVect[i]) && commandVect[i] != ";" && i < commandVect.size()) 
@@ -469,9 +470,7 @@ int parseMultipleExec(string inputLine)
   				{
   					connectorOrCount++;
   					//cout << "status is -1, do not run second command\n";
-  					if(i + 2 < commandVect.size() && !commandVect[i+2].empty()) {
-  					i = i + 2;
-                                        }
+  				          i = i + 2;
   					//cout << i << "\n";
 					//cout << commandVect[i] << "\n";
   					//cout << j << "\n";
@@ -555,14 +554,14 @@ int singleTest(string inputLine)
   BOOST_FOREACH(string t, tokens)
   {
     commandVect.push_back(t);
-    cout << t << endl;
+   // cout << t << endl;
   }
 
   if(commandVect.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   {
     struct stat buf;
     status = stat(commandVect[1].c_str(), &buf);  //stat returns 0 if succesful
-    cout << "status stat " << status << endl;
+    cout << "status stat, 0 = file/dir exists-- " << status << endl;
   }
         
    if(commandVect.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
@@ -573,13 +572,14 @@ int singleTest(string inputLine)
          if(commandVect[1] == "-e")
          {
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat " << status << endl;
+           cout << "status stat, 0 = file/dir exists-- " << status << endl;
+
          }
     
          else if(commandVect[1] == "-f")
          {   
           //  status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-            cout << "status stat " << status << endl;
+            cout << "status stat, 0 = file/dir exists-- " << status << endl;
     
              // stat(commandVect[2].c_str(), &buf);
             if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
@@ -591,7 +591,7 @@ int singleTest(string inputLine)
          else if(commandVect[1] == "-d")
          {
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat " << status << endl;
+           cout << "status stat, 0 = file/dir exists-- " << status << endl;
     
            if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              cout << "Is not a dir " << endl;
@@ -603,7 +603,7 @@ int singleTest(string inputLine)
            cout << "wrong flag syntax, defaulting to -e " << endl;
     
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat " << status << endl;
+           cout << "status stat, 0 = file/dir exists-- " << status << endl; 
     
            //cout << "wrong flag syntax, defaulting to -e " << endl;
           //exit(1); // exit failure
@@ -625,14 +625,14 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
   BOOST_FOREACH(string t, tokens)
   {
     commandVect.push_back(t);
-    cout << t << endl;
+ //   cout << t << endl;
   }
   	
   if(commandVect.size() == 1)   //only test:  /some/thing, not -'flag' /some/thing
   {
     struct stat buf;
     status = stat(commandVect[0].c_str(), &buf);  //stat returns 0 if succesful
-    cout << "status stat " << status << endl;
+    cout << "status stat, 0 = file/dir exists-- " << status << endl;
   }
         
    if(commandVect.size() == 2)   //there are 2 args:  -'flag' /some/bull/shit
@@ -646,13 +646,13 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
          if(commandVect[0] == "-e")
          {
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat " << status << endl;
+           cout << "status stat, 0 = file/dir exists-- " << status << endl;
          }
     
          else if(commandVect[0] == "-f")
          {   
           //  status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-            cout << "status stat " << status << endl;
+            cout << "status stat, 0 = file/dir exists-- " << status << endl;
     
              // stat(commandVect[2].c_str(), &buf);
             if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
@@ -664,7 +664,7 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
          else if(commandVect[0] == "-d")
          {
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat " << status << endl;
+           cout << "status stat, 0 = file/dir exists-- " << status << endl;
     
            if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              cout << "Is not a dir " << endl;
@@ -676,7 +676,7 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
            cout << "wrong flag syntax, defaulting to -e " << endl;
     
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat " << status << endl;
+           cout << "status stat, 0 = file/dir exists-- " << status << endl;
     
            //cout << "wrong flag syntax, defaulting to -e " << endl;
           //exit(1); // exit failure
