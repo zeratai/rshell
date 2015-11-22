@@ -690,53 +690,59 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
 vector<string> cmdsInsideParen;
 int findClosingParen(string inputLine, size_t openPos)  
 {
+    
     size_t closePos = openPos;
-   if(closePos == inputLine.size() )
-     return closePos;
-   
-   else
-   {
+  /* if(closePos == inputLine.size() )
+     return closePos;    */
+    cout << "init closePos " << closePos << endl;  
+   // else
+ //  {
         string text = inputLine;
        // char text[inputLine.length()];
       //  strcpy(text, inputLine.c_str());
       
         //int closePos = openPos;
         int counter = 1;
-        while (counter > 0) 
-        {
-            char c = text[++closePos];
-            if (c == '(') 
+	while (counter > 0) 
+        { 
+            //string c = text[++closePos];
+            closePos++;
+            string c = text.substr(closePos,1);
+            //cout << " c: " << c ;
+            if (c == "(") 
                 counter++;
             
-            else if (c == ')') 
+            else if (c == ")") 
                 counter--;
             
         }
+        cout << endl;
        // char insideParen[closePos-1];          //insideParen should contain cmds inside
         //int number_of_chars = closePos - (openPos + 1);
         //strncpy ( insideParen, text + (openPos + 1), number_of_chars);
         //insideParen[strlen(insideParen)] = '\0';
-        string insideParen = text.substr(openPos+1,closePos-1); 
+        string insideParen = text.substr(openPos+1,(closePos-openPos)-1); 
   //      for(int i=0; i < insideParen.length(); i++)
    //        cout << insideParen[i] ;
         
          cout<< "closePos" << closePos << endl;
         //convert  insideParen to string
-        string toVect(insideParen);
-        cout << "toVect: " << toVect << endl;
+        //string toVect(insideParen);
+        cout << "insideParen: " << insideParen << endl;
         //push toVect to vector cmdsInsideParen
-        cmdsInsideParen.push_back(toVect);
+        cmdsInsideParen.push_back(insideParen);
         
+       /* 
         inputLine.erase (openPos,closePos);
         if(inputLine.find("(") != string::npos)
         {
             size_t openPos = inputLine.find("(");
             closePos = 0;
        	    closePos = findClosingParen(inputLine, openPos);
-        }
+        }     */
         
         return closePos;
-   }
+   //}
   
 }
 
@@ -844,17 +850,81 @@ void shell()
 		}    */
 		
                 //also find [, for bracket test
-	
-                if( inputLine.find("(") != string::npos)
-		{
-			size_t openPos = inputLine.find("(");
-		   /* size_t closeParen = */ findClosingParen(inputLine, openPos);
-		    status = executeParen(inputLine);
+	    //------------------------------------------------------------------------
+               if( inputLine.find("(") != string::npos)
+	       {
+		    size_t openPos = inputLine.find("(");
+		    size_t closeParen =  findClosingParen(inputLine, openPos);
+		    
+		    string cutInput = inputLine.substr(openPos,closeParen+1);  //cut analyzed() in inputLine
+                    cout << "cutInput " << cutInput << endl;
+                    size_t i = inputLine.find(cutInput);
+                    string newInput;
+                    if(i != string::npos)
+                       newInput = inputLine.erase(i, cutInput.length() );
+                    cout << "newInput: " << newInput << endl;
+		    if(newInput.find("(") != string::npos) //part of inputLine is cut(analyzed part) then check "(" again
+		    {
+		        size_t openPos1 = newInput.find("(");
+		        findClosingParen(newInput, openPos1);
+		    }
+		    
+                  //erase "(" and ")"
+                 inputLine.erase( remove(inputLine.begin(), inputLine.end(), '('), inputLine.end() );
+                 inputLine.erase( remove(inputLine.begin(), inputLine.end(), ')'), inputLine.end() );
+                // cout << "inputLine erase: " << inputLine << endl;
+                 //erase stuff from cmdsInsideParen vector from inputLine
+                  for(size_t i = 0; i < cmdsInsideParen.size(); i++)
+                  {
+                    size_t j = inputLine.find(cmdsInsideParen[i]);
+                
+                     if (j != string::npos)
+                       inputLine.erase(j, cmdsInsideParen[i].length());
+                  }
+                   cout << "inputLine erase (), cmdsInsideParen: " << inputLine << endl;
+
+                   //parse for connectors outside ()
+                   string erased = inputLine;
+                   vector<string> connectors;
+        	//cout << "using multiple parse exec function";
+        	   char_separator<char> sep(" \r\a\t\n");
+         	   tokenizer<char_separator<char> > tokens(erased, sep);
+        
+          	    BOOST_FOREACH(string t, tokens)
+          	    {
+            	     connectors.push_back(t);
+		       cout <<"connectors: " << t << "\n";
+          	     }
+            
+            	    for(size_t i = 0; i < connectors.size(); i++)
+            	    { 	 
+                	if(connectors[i] == "&&")
+                	{	
+                          status = parseMultipleExec(cmdsInsideParen[i]);
+                    	  if(status == -1)
+                      	    cmdsInsideParen.erase (cmdsInsideParen.begin()+1);
+                    	else
+                      	    status = parseMultipleExec(cmdsInsideParen[i+1]);
+                	}		
+                	else if(connectors[i] == "||")
+                	{
+                	    status = parseMultipleExec(cmdsInsideParen[i]);
+                    	    if(status != -1)
+                      		cmdsInsideParen.erase (cmdsInsideParen.begin()+1);
+                    
+                	}
+            	    }
+           	 //if there's no connectors outside ()
+		    for(size_t i = 0; i < cmdsInsideParen.size(); i++)
+		    {
+		        status = parseMultipleExec(cmdsInsideParen[i]);
+		    }
+		    //status = executeParen(inputLine);
 		    goto jump;
 		}
-	
+           //---------------------------------------------------------------------------	
                 //also find [, for bracket test
-               else if( inputLine.find("[") != string::npos || inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos
+        else if( inputLine.find("[") != string::npos || inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos
                      || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos) 
 		{
 			//cout << "use multiple parse\n";
