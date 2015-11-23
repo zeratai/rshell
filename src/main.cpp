@@ -694,7 +694,7 @@ int findClosingParen(string inputLine, size_t openPos)
     size_t closePos = openPos;
   /* if(closePos == inputLine.size() )
      return closePos;    */
-    cout << "init closePos " << closePos << endl;  
+    //cout << "init closePos " << closePos << endl;  
    // else
  //  {
         string text = inputLine;
@@ -716,7 +716,7 @@ int findClosingParen(string inputLine, size_t openPos)
                 counter--;
             
         }
-        cout << endl;
+        //cout << endl;
        // char insideParen[closePos-1];          //insideParen should contain cmds inside
         //int number_of_chars = closePos - (openPos + 1);
         //strncpy ( insideParen, text + (openPos + 1), number_of_chars);
@@ -725,10 +725,10 @@ int findClosingParen(string inputLine, size_t openPos)
   //      for(int i=0; i < insideParen.length(); i++)
    //        cout << insideParen[i] ;
         
-         cout<< "closePos" << closePos << endl;
+         //cout<< "closePos" << closePos << endl;
         //convert  insideParen to string
         //string toVect(insideParen);
-        cout << "insideParen: " << insideParen << endl;
+        //cout << "insideParen: " << insideParen << endl;
         //push toVect to vector cmdsInsideParen
         cmdsInsideParen.push_back(insideParen);
         
@@ -760,7 +760,7 @@ int executeParen(string inputLine)
    for(size_t i = 0; i < cmdsInsideParen.size(); i++)
    { 
      cmdsInsideParen[i].erase( remove(cmdsInsideParen[i].begin(),cmdsInsideParen[i].end(), ')' ), cmdsInsideParen[i].end() );
-     cout << "in executeParen, cmdsInsideParen "<<cmdsInsideParen[i] << endl;   
+     //cout << "in executeParen, cmdsInsideParen "<<cmdsInsideParen[i] << endl;   
    
    }
  
@@ -783,7 +783,7 @@ int executeParen(string inputLine)
    BOOST_FOREACH(string t, tokens)
    {
      connectorVect.push_back(t);
-     cout << "connectorVect " << t << endl;
+     //cout << "connectorVect " << t << endl;
    }
 
    for(size_t i = 0; i < cmdsInsideParen.size(); i++)
@@ -857,12 +857,12 @@ void shell()
 		    size_t closeParen =  findClosingParen(inputLine, openPos);
 		    
 		    string cutInput = inputLine.substr(openPos,closeParen+1);  //cut analyzed() in inputLine
-                    cout << "cutInput " << cutInput << endl;
+                    //cout << "cutInput " << cutInput << endl;
                     size_t i = inputLine.find(cutInput);
                     string newInput;
                     if(i != string::npos)
                        newInput = inputLine.erase(i, cutInput.length() );
-                    cout << "newInput: " << newInput << endl;
+                    //cout << "newInput: " << newInput << endl;
 		    if(newInput.find("(") != string::npos) //part of inputLine is cut(analyzed part) then check "(" again
 		    {
 		        size_t openPos1 = newInput.find("(");
@@ -881,7 +881,7 @@ void shell()
                      if (j != string::npos)
                        inputLine.erase(j, cmdsInsideParen[i].length());
                   }
-                   cout << "inputLine erase (), cmdsInsideParen: " << inputLine << endl;
+                   //cout << "inputLine erase (), cmdsInsideParen: " << inputLine << endl;
 
                    //parse for connectors outside ()
                    string erased = inputLine;
@@ -893,7 +893,7 @@ void shell()
           	    BOOST_FOREACH(string t, tokens)
           	    {
             	     connectors.push_back(t);
-		       cout <<"connectors: " << t << "\n";
+		       //cout <<"connectors: " << t << "\n";
           	     }
             
             	    for(size_t i = 0; i < connectors.size(); i++)
@@ -919,6 +919,7 @@ void shell()
 		    {
 		        status = parseMultipleExec(cmdsInsideParen[i]);
 		    }
+                    cmdsInsideParen.clear();
 		    //status = executeParen(inputLine);
 		    goto jump;
 		}
