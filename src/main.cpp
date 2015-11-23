@@ -126,6 +126,8 @@ bool secondOrConnector = false;
 bool semiConnector = false;
 bool commentConnector = false;
 bool testProgram = false;
+bool openParen = false;
+bool endParen = false;
 int connectorAndCount = 0;
 int connectorOrCount = 0;
 int testRun = 0;
@@ -153,6 +155,14 @@ void whichConnector(string c) {
    else if( c == "test" || c == "[") {
    		testProgram = true;
    		//cout << "This is a test program\n";
+   }
+   else if( c == "(") {
+   		openParen = true;
+   		//cout << "This is a parenthesis connector\n";
+   }
+   else if( c == ")") {
+   		endParen = true;
+   		openParen = false;
    }
 }
 
@@ -197,9 +207,18 @@ bool hasConnector(string c) {
        semiConnector = true;
    	   return true;
    }
-   else if ( c == "#") {
+   else if( c == "#") {
        commentConnector = true;
        return true;
+   }
+   else if (c == "(") {
+   		openParen = true;
+   		return true;
+   }
+   else if(c == ")") {
+   		endParen = true;
+   		openParen = false;
+   		return true;
    }
    return false;
 }
@@ -225,7 +244,7 @@ int parseMultipleExec(string inputLine)
 	vector<string> commandVect;
 	vector<string> parsedVector;
 	//cout << "using multiple parse exec function";
-	char_separator<char> sep(" \r\a\t\n]", ";&|#");
+	char_separator<char> sep(" \r\a\t\n]", ";&|#()");
  	tokenizer<char_separator<char> > tokens(inputLine, sep);
 
   	BOOST_FOREACH(string t, tokens)
@@ -364,7 +383,17 @@ int parseMultipleExec(string inputLine)
   			parsedVector.clear(); // empty out the rest of the cmds and arguments after #
   			commentConnector = false; // default back to false for further cmds inputs
   		}
-  		else if(andConnector) // Take parsedVector and run the command 
+  		else if(openParen) {
+  			if(hasConnector(commandVect[i])) // if it has another connector and status is not -1, run it 
+  			{
+  				status = execute(parsedVector);
+  				parsedVector.clear();
+  			}
+  			else {
+  				parsedVector.push_back(commandVect[i]);
+  			}
+  		}
+  		else if(andConnector && !openParen) // Take parsedVector and run the command 
   		{
   			//cout << "in and connector \n";
   			// run once for first cmd
@@ -386,6 +415,11 @@ int parseMultipleExec(string inputLine)
   					andConnector = false; // reset andConnector to check if cmd ends or if there are more commands
   					secondAndConnector = false;
   				} 
+  				else if(hasConnector(commandVect[i]) && endParen && status != -1) {
+  					status = execute(parsedVector);
+  					andConnector = false;
+  					secondAndConnector = false;
+  				}
   			}
   			else if(status == -1) 
   			{
@@ -405,7 +439,7 @@ int parseMultipleExec(string inputLine)
   				whichConnector(commandVect[i]);
   				size_t j = i;
   				//cout << "Position j at semicolon check: " << j << "\n";
-  				if(commandVect[i] == ";") 
+  				if(commandVect[i] == ";" || commandVect[j] == ")") 
   				{
   				    //cout << "has semicolon \n";
   					j = j + 1;
@@ -426,7 +460,7 @@ int parseMultipleExec(string inputLine)
   			else
   				parsedVector.push_back(commandVect[i]);
   		}
-  		else if(orConnector) // Take parsedVector and run the command 
+  		else if(orConnector && !openParen) // Take parsedVector and run the command 
   		{
   			//cout << "in or connector \n" << "Current commandVect: " << commandVect[i] << "\n";
   			// run once for first cmd
@@ -449,6 +483,11 @@ int parseMultipleExec(string inputLine)
   						status = execute(parsedVector);
   						orConnector = false; // reset andConnector to check if cmd ends or if there are more commands
   						secondOrConnector = false;
+  				}
+  				else if(hasConnector(commandVect[i]) && endParen && status != -1) {
+  					status = execute(parsedVector);
+  					andConnector = false;
+  					secondAndConnector = false;
   				}
   			}
   			else if(hasConnector(commandVect[i]) && status == -1) // if it has another connector and status is -1, run it 
@@ -489,7 +528,7 @@ int parseMultipleExec(string inputLine)
   					if(!commandVect[j].empty()) 
   					{
   					    //cout << "has semicolon \n";
-  					    if(commandVect[j].compare(";")) {
+  					    if(commandVect[j].compare(";") || commandVect[j].compare(")")) {
   						j = j + 1;
 					    }
   					}
@@ -712,7 +751,7 @@ void shell()
 		
                 //also find [, for bracket test
                	if( inputLine.find("[") != string::npos || inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos
-                     || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos) 
+                     || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos || inputLine.find("(") != string::npos) 
 		{
 			//cout << "use multiple parse\n";
 			status = parseMultipleExec(inputLine);
