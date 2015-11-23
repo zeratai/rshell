@@ -53,3 +53,7 @@ an && connector will cause the command to run the && command and will not run th
 
 ls && pwd && echo yes && echo done || echo no ; ls -l #these commands work but our rshell will try to execute a final command
 causing a perror, this needs further investigation
+
+for ():
+cmds should be in () like --- (echo a) && (echo b && echo c) or (echo a && echo b) && (echo c)
+if echo a && (echo b && echo c) seg faults
