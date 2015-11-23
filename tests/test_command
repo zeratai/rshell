@@ -1,0 +1,63 @@
+Script started on Mon 23 Nov 2015 01:26:18 AM PST
+[jmoy@hammer tests]$ ./../bin/rshell
+[jmoy@hammer.cs.ucr.edu]$ test /
+status stat, 0 = file/dir exists-- 0
+[jmoy@hammer.cs.ucr.edu]$ test -f multi_command.script
+status stat, 0 = file/dir exists-- 0
+Is a regular file
+[jmoy@hammer.cs.ucr.edu]$ [ -e /]
+status stat, 0 = file/dir exists-- 0
+[jmoy@hammer.cs.ucr.edu]$ [ -f exit_commands]
+status stat, 0 = file/dir exists-- 0
+Is a regular file
+[jmoy@hammer.cs.ucr.edu]$ test -d / && echo a && echo b
+status stat, 0 = file/dir exists-- 0
+Is a dir
+a
+b
+[jmoy@hammer.cs.ucr.edu]$ test -f single_commands || echo a
+status stat, 0 = file/dir exists-- 0
+Is a regular file
+[jmoy@hammer.cs.ucr.edu]$ [e-e ../tests] && ls || pwd
+status stat, 0 = file/dir exists-- 0
+commented_commands  exit_commands  multi_command.script	 precedence_command  precedence_command.script	single_commands	 test_command.script
+[jmoy@hammer.cs.ucr.edu]$ ls l || test /
+[jmoy@hammer.cs.ucr.edu]$ ls -j || [ -f exit_commands]
+ls: invalid option -- 'j'
+Try `ls --help' for more information.
+status stat, 0 = file/dir exists-- 0
+Is a regular file
+[jmoy@hammer.cs.ucr.edu]$ ls -j || test /
+ls: invalid option -- 'j'
+Try `ls --help' for more information.
+status stat, 0 = file/dir exists-- 0
+[jmoy@hammer.cs.ucr.edu]$ ls && pwd && test /
+commented_commands  exit_commands  multi_command.script	 precedence_command  precedence_command.script	single_commands	 test_command.script
+/home/csmajs/jmoy/CS100/Assignment/01/rshell/tests
+status stat, 0 = file/dir exists-- 0
+[jmoy@hammer.cs.ucr.edu]$ ls && pwd && [ -f precendece_command]
+commented_commands  exit_commands  multi_command.script	 precedence_command  precedence_command.script	single_commands	 test_command.script
+/home/csmajs/jmoy/CS100/Assignment/01/rshell/tests
+status stat, 0 = file/dir exists-- -1
+Is not a regular file
+[jmoy@hammer.cs.ucr.edu]$ test -e file || echo a
+status stat, 0 = file/dir exists-- -1
+[jmoy@hammer.cs.ucr.edu]$ [ -d /] || echo a; echo b
+status stat, 0 = file/dir exists-- 0
+Is a dir
+[jmoy@hammer.cs.ucr.edu]$ echo a;&& echo b; test /
+a
+b
+status stat, 0 = file/dir exists-- 0
+[jmoy@hammer.cs.ucr.edu]$ lsh-j || test -f single_commands; echo a
+ls: invalid option -- 'j'
+Try `ls --help' for more information.
+status stat, 0 = file/dir exists-- 0
+Is a regular file
+a
+[jmoy@hammer.cs.ucr.edu]$ exit
+This is our own custom exit
+[jmoy@hammer tests]$ exit
+exit
+
+Script done on Mon 23 Nov 2015 01:29:45 AM PST
