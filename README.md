@@ -61,3 +61,4 @@ Nested () is not supported and will lead to seg faults.
 Only 2 batches of () is supported  e.g. --- (echo this && ls) && (echo next && pwd) -- not (echo this && ls) && (echo next && pwd) && (ls && pwd)
 cmds should be in () like --- (echo a) && (echo b && echo c) or (echo a && echo b) && (echo c),
 if typed: echo a && (echo b && echo c), seg faults.
+
