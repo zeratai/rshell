@@ -10,7 +10,6 @@
 #include <dirent.h>     //DIR, struct dirent
 #include <errno.h>
 #include <vector>
-#include <sstream>
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
 #include <algorithm>   //copy
@@ -153,7 +152,7 @@ void whichConnector(string c) {
    }
    else if( c == "test" || c == "[") {
    		testProgram = true;
-   	//	cout << "This is a test program\n";
+   		//cout << "This is a test program\n";
    }
 }
 
@@ -248,15 +247,15 @@ int parseMultipleExec(string inputLine)
   			if(hasConnector(commandVect[i])) // if it has another connector and status is not -1, run it 
   			{
   				for(size_t i = 0; i < parsedVector.size(); i++) {
-  		//		  cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
+  				 // cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
   				}
-  			//	cout << "has connector stop pushing and execute test \n";
+  				//cout << "has connector stop pushing and execute test \n";
   				//status = execute(parsedVector);
   				if(parsedVector.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   				{
     				  struct stat buf;
     				  status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
-    				  cout << "status stat, 0 = file/dir exists-- " << status << endl;
+    				  cout << "status stat " << status << endl;
   				}
         
    				if(parsedVector.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
@@ -266,13 +265,12 @@ int parseMultipleExec(string inputLine)
     
          				if(parsedVector[1] == "-e")
          				{
-         				      cout << "status stat, 0 = file/dir exists-- " << status << endl;
+         					cout << "status stat " << status << endl;
          				}
     
          				else if(parsedVector[1] == "-f")
          				{   
-                     			      cout << "status stat, 0 = file/dir exists-- " << status << endl;
-
+                     				cout << "status stat " << status << endl;
     			                      if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
               					cout << "Is not a regular file " << endl;
             				      else
@@ -281,8 +279,8 @@ int parseMultipleExec(string inputLine)
       
          				else if(parsedVector[1] == "-d")
          				{
-           					cout << "status stat, 0 = file/dir exists-- " << status << endl;
-                                                    
+           					cout << "status stat " << status << endl;
+    
            					if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              					cout << "Is not a dir " << endl;
            					else
@@ -291,7 +289,7 @@ int parseMultipleExec(string inputLine)
          				else if(parsedVector[1] != "-e" || parsedVector[1] != "-f" || parsedVector[1] != "-d")
          				{
            					cout << "wrong flag syntax, defaulting to -e " << endl;
-               				        cout << "status stat, 0 = file/dir exists-- " << status << endl;
+               				        cout << "status stat " << status << endl;
          				}  
    				}
    				testProgram = false;
@@ -300,16 +298,16 @@ int parseMultipleExec(string inputLine)
   			else if(i+1 >= commandVect.size()) {
                                 
   				parsedVector.push_back(commandVect[i]);
-  			//	for(size_t i = 0; i < parsedVector.size(); i++) {
-  			//	  cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
-  			//	}
-  			//	cout << "has connector stop pushing and execute test \n";
+  				for(size_t i = 0; i < parsedVector.size(); i++) {
+  				  //cout << "Parsed Vector in test: " << parsedVector[i] << "\n";
+  				}
+  				//cout << "has connector stop pushing and execute test \n";
   				//status = execute(parsedVector);
   				if(parsedVector.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   				{
     				  struct stat buf;
     				  status = stat(parsedVector[1].c_str(), &buf);  //stat returns 0 if succesful
-    				  cout << "status stat, 0 = file/dir exists-- " << status << endl;
+    				  cout << "status stat " << status << endl;
   				}
         
    				if(parsedVector.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
@@ -319,12 +317,12 @@ int parseMultipleExec(string inputLine)
     
          				if(parsedVector[1] == "-e")
          				{
-         					cout << "status stat, 0 = file/dir exists-- " << status << endl;
+         					cout << "status stat " << status << endl;
          				}
     
          				else if(parsedVector[1] == "-f")
          				{   
-            				       cout << "status stat, 0 = file/dir exists-- " << status << endl;
+            				       cout << "status stat " << status << endl;
     			                     if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
               					cout << "Is not a regular file " << endl;
             			             else
@@ -333,7 +331,7 @@ int parseMultipleExec(string inputLine)
       
          				else if(parsedVector[1] == "-d")
          				{
-           					cout << "status stat, 0 = file/dir exists-- " << status << endl;
+           					cout << "status stat " << status << endl;
     
            				    if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              					cout << "Is not a dir " << endl;
@@ -343,7 +341,7 @@ int parseMultipleExec(string inputLine)
          				else if(parsedVector[1] != "-e" || parsedVector[1] != "-f" || parsedVector[1] != "-d")
          				{
            					cout << "wrong flag syntax, defaulting to -e " << endl;
-               				        cout << "status stat, 0 = file/dir exits-- " << status << endl;
+               				        cout << "status stat " << status << endl;
          				} 
          			}
          		testProgram = false;
@@ -393,7 +391,7 @@ int parseMultipleExec(string inputLine)
   			{
   				connectorAndCount++;
   				//cout << "status is -1, do not run second command\n";
-                           	  i = i + 2;
+  				i = i + 2;
   				//cout << i << "\n";
   				//cout << j << "\n";
   				while(!hasConnector(commandVect[i]) && commandVect[i] != ";" && i < commandVect.size()) 
@@ -470,7 +468,9 @@ int parseMultipleExec(string inputLine)
   				{
   					connectorOrCount++;
   					//cout << "status is -1, do not run second command\n";
-  				          i = i + 2;
+  					if(i + 2 < commandVect.size() && !commandVect[i+2].empty()) {
+  					i = i + 2;
+                                        }
   					//cout << i << "\n";
 					//cout << commandVect[i] << "\n";
   					//cout << j << "\n";
@@ -554,14 +554,14 @@ int singleTest(string inputLine)
   BOOST_FOREACH(string t, tokens)
   {
     commandVect.push_back(t);
-   // cout << t << endl;
+    cout << t << endl;
   }
 
   if(commandVect.size() == 2)   //only test /some/thing, not test -'flag' /some/thing
   {
     struct stat buf;
     status = stat(commandVect[1].c_str(), &buf);  //stat returns 0 if succesful
-    cout << "status stat, 0 = file/dir exists-- " << status << endl;
+    cout << "status stat " << status << endl;
   }
         
    if(commandVect.size() == 3)   //there are 3 args: test -'flag' /some/bull/shit
@@ -572,14 +572,13 @@ int singleTest(string inputLine)
          if(commandVect[1] == "-e")
          {
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat, 0 = file/dir exists-- " << status << endl;
-
+           cout << "status stat " << status << endl;
          }
     
          else if(commandVect[1] == "-f")
          {   
           //  status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-            cout << "status stat, 0 = file/dir exists-- " << status << endl;
+            cout << "status stat " << status << endl;
     
              // stat(commandVect[2].c_str(), &buf);
             if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
@@ -591,7 +590,7 @@ int singleTest(string inputLine)
          else if(commandVect[1] == "-d")
          {
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat, 0 = file/dir exists-- " << status << endl;
+           cout << "status stat " << status << endl;
     
            if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              cout << "Is not a dir " << endl;
@@ -603,7 +602,7 @@ int singleTest(string inputLine)
            cout << "wrong flag syntax, defaulting to -e " << endl;
     
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat, 0 = file/dir exists-- " << status << endl; 
+           cout << "status stat " << status << endl;
     
            //cout << "wrong flag syntax, defaulting to -e " << endl;
           //exit(1); // exit failure
@@ -625,14 +624,14 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
   BOOST_FOREACH(string t, tokens)
   {
     commandVect.push_back(t);
- //   cout << t << endl;
+    cout << t << endl;
   }
   	
   if(commandVect.size() == 1)   //only test:  /some/thing, not -'flag' /some/thing
   {
     struct stat buf;
     status = stat(commandVect[0].c_str(), &buf);  //stat returns 0 if succesful
-    cout << "status stat, 0 = file/dir exists-- " << status << endl;
+    cout << "status stat " << status << endl;
   }
         
    if(commandVect.size() == 2)   //there are 2 args:  -'flag' /some/bull/shit
@@ -646,13 +645,13 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
          if(commandVect[0] == "-e")
          {
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat, 0 = file/dir exists-- " << status << endl;
+           cout << "status stat " << status << endl;
          }
     
          else if(commandVect[0] == "-f")
          {   
           //  status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-            cout << "status stat, 0 = file/dir exists-- " << status << endl;
+            cout << "status stat " << status << endl;
     
              // stat(commandVect[2].c_str(), &buf);
             if( S_ISREG(buf.st_mode ) == 0 ) // checks for regular file
@@ -664,7 +663,7 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
          else if(commandVect[0] == "-d")
          {
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat, 0 = file/dir exists-- " << status << endl;
+           cout << "status stat " << status << endl;
     
            if(S_ISDIR(buf.st_mode ) == 0)  //checks for dir
              cout << "Is not a dir " << endl;
@@ -676,7 +675,7 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
            cout << "wrong flag syntax, defaulting to -e " << endl;
     
           // status = stat(commandVect[2].c_str(), &buf);  //stat returns 0 if succesful
-           cout << "status stat, 0 = file/dir exists-- " << status << endl;
+           cout << "status stat " << status << endl;
     
            //cout << "wrong flag syntax, defaulting to -e " << endl;
           //exit(1); // exit failure
@@ -684,144 +683,6 @@ int singleBracTest(string inputLine)  //cmd: [ -'flag' some/bull/shit ]
        
    }
    return status;
-}
-
-//int exceParenstat;
-vector<string> cmdsInsideParen;
-int findClosingParen(string inputLine, size_t openPos)  
-{
-    
-    size_t closePos = openPos;
-  /* if(closePos == inputLine.size() )
-     return closePos;    */
-    cout << "init closePos " << closePos << endl;  
-   // else
- //  {
-        string text = inputLine;
-       // char text[inputLine.length()];
-      //  strcpy(text, inputLine.c_str());
-      
-        //int closePos = openPos;
-        int counter = 1;
-	while (counter > 0) 
-        { 
-            //string c = text[++closePos];
-            closePos++;
-            string c = text.substr(closePos,1);
-            //cout << " c: " << c ;
-            if (c == "(") 
-                counter++;
-            
-            else if (c == ")") 
-                counter--;
-            
-        }
-        cout << endl;
-       // char insideParen[closePos-1];          //insideParen should contain cmds inside
-        //int number_of_chars = closePos - (openPos + 1);
-        //strncpy ( insideParen, text + (openPos + 1), number_of_chars);
-        //insideParen[strlen(insideParen)] = '\0';
-        string insideParen = text.substr(openPos+1,(closePos-openPos)-1); 
-  //      for(int i=0; i < insideParen.length(); i++)
-   //        cout << insideParen[i] ;
-        
-         cout<< "closePos" << closePos << endl;
-        //convert  insideParen to string
-        //string toVect(insideParen);
-        cout << "insideParen: " << insideParen << endl;
-        //push toVect to vector cmdsInsideParen
-        cmdsInsideParen.push_back(insideParen);
-        
-       /* 
-        inputLine.erase (openPos,closePos);
-        if(inputLine.find("(") != string::npos)
-        {
-            size_t openPos = inputLine.find("(");
-            closePos = 0;
-       	    closePos = findClosingParen(inputLine, openPos);
-        }     */
-        
-        return closePos;
-   //}
-  
-}
-
-int executeParen(string inputLine)  
-{
-   int stat;
-   //erase "(" and ")"
-   inputLine.erase( remove(inputLine.begin(), inputLine.end(), '('), inputLine.end() );
-   inputLine.erase( remove(inputLine.begin(), inputLine.end(), ')'), inputLine.end() );
-
-//   cout << cmdsInsideParen.size() << endl;
-  // for(size_t i = 0; i < cmdsInsideParen.size(); i++)
-    // cout << "in executeParen, cmdsInsideParen "<<cmdsInsideParen[i] << endl;   
-  
-   for(size_t i = 0; i < cmdsInsideParen.size(); i++)
-   { 
-     cmdsInsideParen[i].erase( remove(cmdsInsideParen[i].begin(),cmdsInsideParen[i].end(), ')' ), cmdsInsideParen[i].end() );
-     cout << "in executeParen, cmdsInsideParen "<<cmdsInsideParen[i] << endl;   
-   
-   }
- 
-   //erase stuff from cmdsInsideParen vector from inputLine
-   for(size_t i = 0; i < cmdsInsideParen.size(); i++)
-   {
-      size_t j = inputLine.find(cmdsInsideParen[i]);
-        
-      if (j != string::npos)
-           inputLine.erase(j, cmdsInsideParen[i].length());
-   }
-   string erased = inputLine;
-  // cout << erased << endl;  //to check
-
-   vector<string> connectorVect;
-
-   char_separator<char> sep(" \r\a\t\n");
-   tokenizer<char_separator<char> > tokens(erased, sep);
-
-   BOOST_FOREACH(string t, tokens)
-   {
-     connectorVect.push_back(t);
-     cout << "connectorVect " << t << endl;
-   }
-
-   for(size_t i = 0; i < cmdsInsideParen.size(); i++)
-   {
-     
-     stat = parseMultipleExec(cmdsInsideParen[i]); 
-   }
-
-  /*
-   for(vector<string>::iterator i = cmdsInsideParen.begin(); i !=  cmdsInsideParen.end(); i++)
-  // for(vector<string>::iterator i = connectorVect.begin(); i !=  connectorVect.end(); i++)
-   {
-       if(*i == "&&")
-       {
-         stat = parseMultipleExec(cmdsInsideParen[i-connectorVect.begin()]);
-         if(stat != 1)
-         {
-           cmdsInsideParen.erase(i+1);
-           continue;
-         }
-         else
-           stat = parseMultipleExec(cmdsInsideParen[i-connectorVect.begin()+1] ); 
-       }
-       
-       else if (*i == "||")
-       {
-         stat = parseMultipleExec(cmdsInsideParen[i-connectorVect.begin()] );
-         if(stat != -1 ) //succeed
-           continue;
-         else
-           stat = parseMultipleExec(cmdsInsideParen[i-connectorVect.begin()+1]);
-       }
-        
-       else
-         stat = parseMultipleExec(cmdsInsideParen[i-connectorVect.begin()]);
-   }
-    */  
-   return stat;
 }
 
 
@@ -850,81 +711,7 @@ void shell()
 		}    */
 		
                 //also find [, for bracket test
-	    //------------------------------------------------------------------------
-               if( inputLine.find("(") != string::npos)
-	       {
-		    size_t openPos = inputLine.find("(");
-		    size_t closeParen =  findClosingParen(inputLine, openPos);
-		    
-		    string cutInput = inputLine.substr(openPos,closeParen+1);  //cut analyzed() in inputLine
-                    cout << "cutInput " << cutInput << endl;
-                    size_t i = inputLine.find(cutInput);
-                    string newInput;
-                    if(i != string::npos)
-                       newInput = inputLine.erase(i, cutInput.length() );
-                    cout << "newInput: " << newInput << endl;
-		    if(newInput.find("(") != string::npos) //part of inputLine is cut(analyzed part) then check "(" again
-		    {
-		        size_t openPos1 = newInput.find("(");
-		        findClosingParen(newInput, openPos1);
-		    }
-		    
-                  //erase "(" and ")"
-                 inputLine.erase( remove(inputLine.begin(), inputLine.end(), '('), inputLine.end() );
-                 inputLine.erase( remove(inputLine.begin(), inputLine.end(), ')'), inputLine.end() );
-                // cout << "inputLine erase: " << inputLine << endl;
-                 //erase stuff from cmdsInsideParen vector from inputLine
-                  for(size_t i = 0; i < cmdsInsideParen.size(); i++)
-                  {
-                    size_t j = inputLine.find(cmdsInsideParen[i]);
-                
-                     if (j != string::npos)
-                       inputLine.erase(j, cmdsInsideParen[i].length());
-                  }
-                   cout << "inputLine erase (), cmdsInsideParen: " << inputLine << endl;
-
-                   //parse for connectors outside ()
-                   string erased = inputLine;
-                   vector<string> connectors;
-        	//cout << "using multiple parse exec function";
-        	   char_separator<char> sep(" \r\a\t\n");
-         	   tokenizer<char_separator<char> > tokens(erased, sep);
-        
-          	    BOOST_FOREACH(string t, tokens)
-          	    {
-            	     connectors.push_back(t);
-		       cout <<"connectors: " << t << "\n";
-          	     }
-            
-            	    for(size_t i = 0; i < connectors.size(); i++)
-            	    { 	 
-                	if(connectors[i] == "&&")
-                	{	
-                          status = parseMultipleExec(cmdsInsideParen[i]);
-                    	  if(status == -1)
-                      	    cmdsInsideParen.erase (cmdsInsideParen.begin()+1);
-                    	else
-                      	    status = parseMultipleExec(cmdsInsideParen[i+1]);
-                	}		
-                	else if(connectors[i] == "||")
-                	{
-                	    status = parseMultipleExec(cmdsInsideParen[i]);
-                    	    if(status != -1)
-                      		cmdsInsideParen.erase (cmdsInsideParen.begin()+1);
-                    
-                	}
-            	    }
-           	 //if there's no connectors outside ()
-		    for(size_t i = 0; i < cmdsInsideParen.size(); i++)
-		    {
-		        status = parseMultipleExec(cmdsInsideParen[i]);
-		    }
-		    //status = executeParen(inputLine);
-		    goto jump;
-		}
-           //---------------------------------------------------------------------------	
-                //also find [, for bracket test
-        else if( inputLine.find("[") != string::npos || inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos
+               	if( inputLine.find("[") != string::npos || inputLine.find(";") != string::npos || inputLine.find("&&") != string::npos
                      || inputLine.find("||") != string::npos || inputLine.find("#") != string::npos) 
 		{
 			//cout << "use multiple parse\n";
