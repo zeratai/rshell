@@ -48,8 +48,16 @@ November 6th, 2015 Bugs
 
 echo "testing with quotes" #this will output "testing with quotes" with the quotation marks - will need to remove later
 
-ls -l && pwd && echo yes! || echo dont output && echo this will fail ; ls -a && pwd #mixing an || following
+ls -l && pwd && echo yes! || echo don't output && echo this will fail ; ls -a && pwd #mixing an || following
 an && connector will cause the command to run the && command and will not run the commands after the ; #The above bug for || connector logic has been fixed, but running the ls -a && pwd will cause errors for pwd
 
 ls && pwd && echo yes && echo done || echo no ; ls -l #these commands work but our rshell will try to execute a final command
 causing a perror, this needs further investigation
+
+No bugs found for test and [] command is working fine even with connectors as tested.
+
+for ():  please see test case for further details
+Nested () is not supported and will lead to seg faults.
+Only 2 batches of () is supported  e.g. --- (echo this && ls) && (echo next && pwd) -- not (echo this && ls) && (echo next && pwd) && (ls && pwd)
+cmds should be in () like --- (echo a) && (echo b && echo c) or (echo a && echo b) && (echo c),
+if typed: echo a && (echo b && echo c), seg faults.
